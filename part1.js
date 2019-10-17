@@ -1,8 +1,8 @@
 var config = {
     destroying: false,
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: $(window).width()-20,
+    height: $(window).height()-20,
     backgroundColor: '#000000',
     parent: 'phaser-example',
     physics: {
@@ -62,6 +62,7 @@ var SmoothedHorionztalControl = new Phaser.Class({
 function preload ()
 {
     this.load.tilemapTiledJSON('map', 'assets/tilemaps/maps/matter-platformer.json');
+    //this.load.tilemapTiledJSON('map', 'assets/tilemaps/maps/collision_test.json');
     this.load.image('kenney_redux_64x64', 'assets/tilemaps/tiles/kenney_redux_64x64.png');
     this.load.spritesheet('player', 'assets/sprites/dude-cropped.png', { frameWidth: 32, frameHeight: 42 });
     this.load.image('box', 'assets/sprites/box-item-boxed.png');
@@ -370,7 +371,7 @@ function createMenu(e){
 }
 function createBtn(e, block, place, isABlock){
     var buttons;
-    btnBox = e.add.sprite(60 + (place * 70), 550, block).setInteractive();
+    btnBox = e.add.sprite(60 + (place * 70), $(window).height() - 70, block).setInteractive();
     btnBox.name = block
     btnBox.setScrollFactor(0);
     //this.btnBox.on('pointerover', function (event) { /* Do something when the mouse enters */ });
