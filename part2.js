@@ -1,7 +1,7 @@
 ﻿var config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: window.innerWidth,
+    height: window.innerHeight,
     backgroundColor: '#000000',
     parent: 'phaser-example',
     physics: {

@@ -207,3 +207,6 @@ nbdist/
 # End of https://www.gitignore.io/api/node,phpstorm,visualstudiocode
 
 .idea/*
+
+assets/
+phaser-3.19.0/

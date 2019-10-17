@@ -1,14 +1,13 @@
 var config = {
-    destroying: false,
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    backgroundColor: '#000000',
+    width: window.innerWidth,
+    height: window.innerHeight,
+    backgroundColor: '#19AAE5',
     parent: 'phaser-example',
     physics: {
         default: 'matter',
         matter: {
-            gravity: { y: 1 },
+            gravity: {y: 1},
             enableSleep: false
         }
     },
@@ -25,32 +24,41 @@ var cursors;
 var text;
 var cam;
 var smoothedControls;
+var map;
+
 
 // Smoothed horizontal controls helper. This gives us a value between -1 and 1 depending on how long
 // the player has been pressing left or right, respectively.
 var SmoothedHorionztalControl = new Phaser.Class({
 
     initialize:
-
-    function SmoothedHorionztalControl (speed)
-    {
-        this.msSpeed = speed;
-        this.value = 0;
-    },
+            function SmoothedHorionztalControl(speed)
+            {
+                this.msSpeed = speed;
+                this.value = 0;
+            },
 
     moveLeft: function (delta)
     {
-        if (this.value > 0) { this.reset(); }
+        if (this.value > 0) {
+            this.reset();
+        }
         this.value -= this.msSpeed * delta;
-        if (this.value < -1) { this.value = -1; }
+        if (this.value < -1) {
+            this.value = -1;
+        }
         playerController.time.rightDown += delta;
     },
 
     moveRight: function (delta)
     {
-        if (this.value < 0) { this.reset(); }
+        if (this.value < 0) {
+            this.reset();
+        }
         this.value += this.msSpeed * delta;
-        if (this.value > 1) { this.value = 1; }
+        if (this.value > 1) {
+            this.value = 1;
+        }
     },
 
     reset: function ()
@@ -59,29 +67,25 @@ var SmoothedHorionztalControl = new Phaser.Class({
     }
 });
 
-function preload ()
+function preload()
 {
-    this.load.tilemapTiledJSON('map', 'assets/tilemaps/maps/matter-platformer.json');
-    this.load.image('kenney_redux_64x64', 'assets/tilemaps/tiles/kenney_redux_64x64.png');
-    this.load.spritesheet('player', 'assets/sprites/dude-cropped.png', { frameWidth: 32, frameHeight: 42 });
-    this.load.image('box', 'assets/sprites/box-item-boxed.png');
-    this.load.image('hammer', 'assets/sprites/hammer.png');
-    this.load.image('hammerOn', 'assets/sprites/hammerOn.png');
-
-    this.load.image('eye', 'assets/pics/lance-overdose-loader-eye.png');
+    this.load.tilemapTiledJSON('map', 'assets/tilemaps/maps/test_layout.json'); //The map
+    this.load.image('kenney_redux_64x64', 'assets/tilemaps/tiles/kenney_redux_64x64.png'); //The Asset
+    this.load.spritesheet('player', 'assets/sprites/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
+    this.load.image('box', 'assets/sprites/box-item-boxed.png'); //Bonus
 }
 
-function create ()
+function create()
 {
-    var map = this.make.tilemap({ key: 'map' });
-    var tileset = map.addTilesetImage('kenney_redux_64x64');
+    map = this.make.tilemap({key: 'map'}); //Generate the map
+    var tileset = map.addTilesetImage('kenney_redux_64x64'); //Apply this texture
     var layer = map.createDynamicLayer(0, tileset, 0, 0);
 
     // Set up the layer to have matter bodies. Any colliding tiles will be given a Matter body.
-    map.setCollisionByProperty({ collides: true });
+    map.setCollisionByProperty({collides: true});
     this.matter.world.convertTilemapLayer(layer);
 
-    this.matter.world.setBounds(map.widthInPixels, map.heightInPixels);
+    // this.matter.world.setBounds(map.widthInPixels, map.heightInPixels);
     this.matter.world.createDebugGraphic();
     this.matter.world.drawDebug = false;
 
@@ -126,10 +130,10 @@ function create ()
     //    chamfer (rounded edges) to avoid the problem of ghost vertices: http://www.iforce2d.net/b2dtut/ghost-vertices
     //  - Left/right/bottom sensors that will not interact physically but will allow us to check if
     //    the player is standing on solid ground or pushed up against a solid object.
-    var playerBody = M.Bodies.rectangle(0, 0, w * 0.75, h, { chamfer: { radius: 10 } });
-    playerController.sensors.bottom = M.Bodies.rectangle(0, h * 0.5, w * 0.5, 5, { isSensor: true });
-    playerController.sensors.left = M.Bodies.rectangle(-w * 0.45, 0, 5, h * 0.25, { isSensor: true });
-    playerController.sensors.right = M.Bodies.rectangle(w * 0.45, 0, 5, h * 0.25, { isSensor: true });
+    var playerBody = M.Bodies.rectangle(0, 0, w * 0.75, h, {chamfer: {radius: 10}});
+    playerController.sensors.bottom = M.Bodies.rectangle(0, h * 0.5, w * 0.5, 5, {isSensor: true});
+    playerController.sensors.left = M.Bodies.rectangle(-w * 0.45, 0, 5, h * 0.25, {isSensor: true});
+    playerController.sensors.right = M.Bodies.rectangle(w * 0.45, 0, 5, h * 0.25, {isSensor: true});
     var compoundBody = M.Body.create({
         parts: [
             playerBody, playerController.sensors.bottom, playerController.sensors.left,
@@ -139,10 +143,29 @@ function create ()
         restitution: 0.05 // Prevent body from sticking against a wall
     });
 
+    // There is a "Button Press Sensor" polygon in the "Sensors" layer in Tiled. We can use this to
+    // map out the "pressable" hitbox for the button.
+    var sensor = map.findObject('Sensors', function (obj) {
+        return obj.name === 'Button Press Sensor';
+    });
+    
+ 
+    var center = M.Vertices.centre(sensor.polygon); // Matter places shapes by center of mass
+    var sensorBody = this.matter.add.fromVertices(
+            sensor.x + center.x, sensor.y + center.y,
+            sensor.polygon,
+            {isStatic: true, isSensor: true}
+    );
+
+
     playerController.matterSprite
-        .setExistingBody(compoundBody)
-        .setFixedRotation() // Sets max inertia to prevent rotation
-        .setPosition(630, 1000);
+            .setExistingBody(compoundBody)
+            .setFixedRotation() // Sets max inertia to prevent rotation
+            .setPosition(630, 1000);
+
+    this.matter.add.image(630, 750, 'box');
+    this.matter.add.image(630, 650, 'box');
+    this.matter.add.image(630, 550, 'box');
 
     cam = this.cameras.main;
     cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -150,25 +173,65 @@ function create ()
 
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+        frames: this.anims.generateFrameNumbers('player', {start: 0, end: 3}),
         frameRate: 10,
         repeat: -1
     });
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('player', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNumbers('player', {start: 5, end: 8}),
         frameRate: 10,
         repeat: -1
     });
     this.anims.create({
         key: 'idle',
-        frames: this.anims.generateFrameNumbers('player', { start: 4, end: 4 }),
+        frames: this.anims.generateFrameNumbers('player', {start: 4, end: 4}),
         frameRate: 10,
         repeat: -1
     });
 
     // Use matter events to detect whether the player is touching a surface to the left, right or
     // bottom.
+
+    // Loop over the active colliding pairs and count the surfaces the player is touching.
+    this.matter.world.on('collisionstart', function (event) {
+        for (var i = 0; i < event.pairs.length; i++)
+        {
+            var bodyA = event.pairs[i].bodyA;
+            var bodyB = event.pairs[i].bodyB;
+            if ((bodyA === playerBody && bodyB === sensorBody) ||
+                    (bodyA === sensorBody && bodyB === playerBody))
+            {
+                console.log("ee");
+                this.matter.world.remove(sensorBody);
+
+                var buttonTile = layer.getTileAt(14, 16);
+
+                // Change the tile to the new index (a "pressed" button tile) and tell the existing
+                // matter body to update itself from the Tiled collision data.
+                buttonTile.index = 93;
+                buttonTile.physics.matterBody.setFromTileCollision();
+
+                // Animate a bridge of new tiles opening up over the lava.
+                for (var j = 5; j <= 14; j++)
+                {
+                    this.time.addEvent({
+                        delay: (j - 5) * 50,
+                        callback: function (x)
+                        {
+                            var bridgeTile = layer.putTileAt(12, x, 12);
+
+                            // When creating a new tile that didn't already have a tile body, you
+                            // can use the tileBody factory method. See
+                            // Phaser.Physics.Matter.TileBody for options. This will default to
+                            // adding a body with the Tiled collision data here.
+                            this.matter.add.tileBody(bridgeTile);
+                        }.bind(this, j)
+                    });
+                }
+            }
+        }
+    }, this);
 
     // Before matter's update, reset the player's count of what surfaces it is touching.
     this.matter.world.on('beforeupdate', function (event) {
@@ -193,19 +256,16 @@ function create ()
             if (bodyA === playerBody || bodyB === playerBody)
             {
                 continue;
-            }
-            else if (bodyA === bottom || bodyB === bottom)
+            } else if (bodyA === bottom || bodyB === bottom)
             {
                 // Standing on any surface counts (e.g. jumping off of a non-static crate).
                 playerController.numTouching.bottom += 1;
-            }
-            else if ((bodyA === left && bodyB.isStatic) || (bodyB === left && bodyA.isStatic))
+            } else if ((bodyA === left && bodyB.isStatic) || (bodyB === left && bodyA.isStatic))
             {
                 // Only static objects count since we don't want to be blocked by an object that we
                 // can push around.
                 playerController.numTouching.left += 1;
-            }
-            else if ((bodyA === right && bodyB.isStatic) || (bodyB === right && bodyA.isStatic))
+            } else if ((bodyA === right && bodyB.isStatic) || (bodyB === right && bodyA.isStatic))
             {
                 playerController.numTouching.right += 1;
             }
@@ -222,40 +282,35 @@ function create ()
     this.input.on('pointerdown', function () {
         this.matter.world.drawDebug = !this.matter.world.drawDebug;
         this.matter.world.debugGraphic.visible = this.matter.world.drawDebug;
-        //console.debug(this);
     }, this);
 
     text = this.add.text(16, 16, '', {
         fontSize: '20px',
-        padding: { x: 20, y: 10 },
+        padding: {x: 20, y: 10},
         backgroundColor: '#ffffff',
         fill: '#000000'
     });
     text.setScrollFactor(0);
     updateText();
-
-    this.input.on('dragstart', function (pointer, gameObject) {
-        gameObject.setTint(0xff0000);
-    });
-
-    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-        gameObject.x = dragX;
-        gameObject.y = dragY;
-        updateInfos(gameObject);
-    });
-
-    this.input.on('dragend', function (pointer, gameObject) {
-        gameObject.clearTint();
-    });
-
-    var btn = createMenu(this);    
-    btn.fixedToCamera = true;
 }
 
-function update (time, delta)
+function update(time, delta)
 {
     var matterSprite = playerController.matterSprite;
 
+    if (!matterSprite) {
+        return;
+    }
+
+    // Player death
+
+    if (matterSprite.y > map.heightInPixels)
+    {
+        matterSprite.destroy();
+        playerController.matterSprite = null;
+        restart.call(this);
+        return;
+    }
     // Horizontal movement
 
     var oldVelocityX;
@@ -274,8 +329,7 @@ function update (time, delta)
         newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, -smoothedControls.value);
 
         matterSprite.setVelocityX(newVelocityX);
-    }
-    else if (cursors.right.isDown && !playerController.blocked.right)
+    } else if (cursors.right.isDown && !playerController.blocked.right)
     {
         smoothedControls.moveRight(delta);
         matterSprite.anims.play('right', true);
@@ -287,8 +341,7 @@ function update (time, delta)
         newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, smoothedControls.value);
 
         matterSprite.setVelocityX(newVelocityX);
-    }
-    else
+    } else
     {
         smoothedControls.reset();
         matterSprite.anims.play('idle', true);
@@ -305,15 +358,13 @@ function update (time, delta)
         {
             matterSprite.setVelocityY(-playerController.speed.jump);
             playerController.lastJumpedAt = time;
-        }
-        else if (playerController.blocked.left)
+        } else if (playerController.blocked.left)
         {
             // Jump up and away from the wall
             matterSprite.setVelocityY(-playerController.speed.jump);
             matterSprite.setVelocityX(playerController.speed.run);
             playerController.lastJumpedAt = time;
-        }
-        else if (playerController.blocked.right)
+        } else if (playerController.blocked.right)
         {
             // Jump up and away from the wall
             matterSprite.setVelocityY(-playerController.speed.jump);
@@ -326,64 +377,44 @@ function update (time, delta)
     updateText();
 }
 
-function updateText ()
+function updateText()
 {
     text.setText([
         'Arrow keys to move. Press "Up" to jump.',
         'You can wall jump!',
         'Click to toggle rendering Matter debug.'
-        // 'Debug:',
-        // '\tBottom blocked: ' + playerController.blocked.bottom,
-        // '\tLeft blocked: ' + playerController.blocked.left,
-        // '\tRight blocked: ' + playerController.blocked.right
+                // 'Debug:',
+                // '\tBottom blocked: ' + playerController.blocked.bottom,
+                // '\tLeft blocked: ' + playerController.blocked.left,
+                // '\tRight blocked: ' + playerController.blocked.right
     ]);
 }
 
-function smoothMoveCameraTowards (target, smoothFactor)
+function smoothMoveCameraTowards(target, smoothFactor)
 {
-    if (smoothFactor === undefined) { smoothFactor = 0; }
+    if (smoothFactor === undefined) {
+        smoothFactor = 0;
+    }
     cam.scrollX = smoothFactor * cam.scrollX + (1 - smoothFactor) * (target.x - cam.width * 0.5);
     cam.scrollY = smoothFactor * cam.scrollY + (1 - smoothFactor) * (target.y - cam.height * 0.5);
 }
-function updateInfos(block){
-    var infos = document.getElementById("infos");
-    infos.innerHTML = "Position de " + block.name + ": " + block.x + "; " + block.y;
-}
 
-function createBlock(e, imageName, blockName, x, y){
-    var c = e.add.container(0, 0);
-    var image = e.add.image(Math.round(x), Math.round(y), imageName).setInteractive();
-    image.name=blockName;
-    c.setAngle(0);
-    c.add(image);
-    e.input.setDraggable(image);
-}
-function actionOnClick(e){
-    
-}
-function createMenu(e){
-    var buttons;
-    btnBox = createBtn(e, "box", 1, true);
-    btnHammer = createBtn(e, "hammer", 0, false);
-    return buttons = [btnBox, btnHammer];
-    //return btnBox;
-}
-function createBtn(e, block, place, isABlock){
-    var buttons;
-    btnBox = e.add.sprite(60 + (place * 70), 550, block).setInteractive();
-    btnBox.name = block
-    btnBox.setScrollFactor(0);
-    //this.btnBox.on('pointerover', function (event) { /* Do something when the mouse enters */ });
-    //this.btnBox.on('pointerout', function (event) { /* Do something when the mouse exits. */ });
-    btnBox.on('pointerdown', function (event){
-        if (isABlock) {
-            createBlock(e, block, block, playerController.matterSprite.x, playerController.matterSprite.y);
-            config.destroying = false;
-        }else{
-            config.destroying = true;
-            btnBox.texture.key = "hammerOn";
-        }
-    }); // Create same block on click.
-    return buttons = [btnBox];
-    //return btnBox;
+
+/**
+ * RESTART A GAME
+ */
+function restart()
+{
+    cam.fade(500, 0, 0, 0);
+    cam.shake(250, 0.01);
+
+    this.time.addEvent({
+        delay: 500,
+        callback: function ()
+        {
+            cam.resetFX();
+            this.scene.restart();
+        },
+        callbackScope: this
+    });
 }
