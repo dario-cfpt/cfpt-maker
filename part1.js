@@ -295,8 +295,9 @@ function create()
     text.setScrollFactor(0);
     updateText();
 
-
+    //For debug
     debugGraphics = this.add.graphics();
+    debugGraphics.visible = !debugGraphics.visible;
 }
 
 function update(time, delta)
@@ -381,6 +382,7 @@ function update(time, delta)
     //bind debug
     if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G)))
     {
+
         debugGraphics.visible = !debugGraphics.visible;
         if (debugGraphics.visible)
         {
