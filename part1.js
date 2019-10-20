@@ -79,7 +79,8 @@ function create()
 {
     map = this.make.tilemap({key: 'map'}); //Generate the map
     var tileset = map.addTilesetImage('kenney_redux_64x64'); //Apply this texture
-    var layer = map.createDynamicLayer(0, tileset, 0, 0);
+    var layer = map.createDynamicLayer("Tile Layer 1", tileset, 0, 0);
+    //   var layer = map.createDynamicLayer(0, tileset, 0, 0); //same (get the first layer)
 
     // Set up the layer to have matter bodies. Any colliding tiles will be given a Matter body.
     map.setCollisionByProperty({collides: true});
@@ -91,6 +92,8 @@ function create()
 
     cursors = this.input.keyboard.createCursorKeys();
     smoothedControls = new SmoothedHorionztalControl(0.0005);
+
+
 
     // The player is a collection of bodies and sensors
     playerController = {
@@ -148,8 +151,8 @@ function create()
     var sensor = map.findObject('Sensors', function (obj) {
         return obj.name === 'Button Press Sensor';
     });
-    
- 
+
+
     var center = M.Vertices.centre(sensor.polygon); // Matter places shapes by center of mass
     var sensorBody = this.matter.add.fromVertices(
             sensor.x + center.x, sensor.y + center.y,
@@ -202,10 +205,9 @@ function create()
             if ((bodyA === playerBody && bodyB === sensorBody) ||
                     (bodyA === sensorBody && bodyB === playerBody))
             {
-                console.log("ee");
                 this.matter.world.remove(sensorBody);
 
-                var buttonTile = layer.getTileAt(14, 16);
+                var buttonTile = layer.getTileAt(14, 16); //start at 0
 
                 // Change the tile to the new index (a "pressed" button tile) and tell the existing
                 // matter body to update itself from the Tiled collision data.
@@ -219,7 +221,7 @@ function create()
                         delay: (j - 5) * 50,
                         callback: function (x)
                         {
-                            var bridgeTile = layer.putTileAt(12, x, 12);
+                            var bridgeTile = layer.putTileAt(12, x, 12); //(id,x,y)
 
                             // When creating a new tile that didn't already have a tile body, you
                             // can use the tileBody factory method. See
@@ -279,9 +281,9 @@ function create()
         playerController.blocked.bottom = playerController.numTouching.bottom > 0 ? true : false;
     });
 
+//EVENT CLICK 
     this.input.on('pointerdown', function () {
-        this.matter.world.drawDebug = !this.matter.world.drawDebug;
-        this.matter.world.debugGraphic.visible = this.matter.world.drawDebug;
+
     }, this);
 
     text = this.add.text(16, 16, '', {
@@ -292,6 +294,9 @@ function create()
     });
     text.setScrollFactor(0);
     updateText();
+
+
+    debugGraphics = this.add.graphics();
 }
 
 function update(time, delta)
@@ -373,6 +378,21 @@ function update(time, delta)
         }
     }
 
+    //bind debug
+    if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G)))
+    {
+        debugGraphics.visible = !debugGraphics.visible;
+        if (debugGraphics.visible)
+        {
+            drawDebug();
+        }
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)))
+    {
+        this.matter.world.drawDebug = !this.matter.world.drawDebug;
+        this.matter.world.debugGraphic.visible = this.matter.world.drawDebug;
+    }
+
     smoothMoveCameraTowards(matterSprite, 0.9);
     updateText();
 }
@@ -400,6 +420,7 @@ function smoothMoveCameraTowards(target, smoothFactor)
 }
 
 
+
 /**
  * RESTART A GAME
  */
@@ -417,4 +438,10 @@ function restart()
         },
         callbackScope: this
     });
+}
+
+function drawDebug()
+{
+    debugGraphics.clear();
+    map.renderDebug(debugGraphics, {tileColor: null});
 }
