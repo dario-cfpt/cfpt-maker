@@ -25,7 +25,7 @@ var text;
 var cam;
 var smoothedControls;
 var map;
-
+var matterSprite;
 
 // Smoothed horizontal controls helper. This gives us a value between -1 and 1 depending on how long
 // the player has been pressing left or right, respectively.
@@ -93,7 +93,13 @@ function create()
     cursors = this.input.keyboard.createCursorKeys();
     smoothedControls = new SmoothedHorionztalControl(0.0005);
 
-
+    layer.forEachTile(function (tile) {
+        // In Tiled, the platform tiles have been given a "type" property which is a string
+        if (tile.properties.type === 'lava' || tile.properties.type === 'spike')
+        {
+            tile.physics.matterBody.body.label = 'dangerousTile';
+        }
+    });
 
     // The player is a collection of bodies and sensors
     playerController = {
@@ -271,6 +277,18 @@ function create()
             {
                 playerController.numTouching.right += 1;
             }
+            if ((getRootBody(bodyB).label === 'dangerousTile') ||
+                    (getRootBody(bodyA).label === 'dangerousTile'))
+            {
+                matterSprite.destroy();
+                playerController.matterSprite = null;
+                restart.call(game.scene.scenes[0]);
+                return;
+            }
+
+
+
+
         }
     });
 
@@ -302,7 +320,7 @@ function create()
 
 function update(time, delta)
 {
-    var matterSprite = playerController.matterSprite;
+     matterSprite = playerController.matterSprite;
 
     if (!matterSprite) {
         return;
@@ -430,7 +448,7 @@ function restart()
 {
     cam.fade(500, 0, 0, 0);
     cam.shake(250, 0.01);
-
+    
     this.time.addEvent({
         delay: 500,
         callback: function ()
@@ -446,4 +464,16 @@ function drawDebug()
 {
     debugGraphics.clear();
     map.renderDebug(debugGraphics, {tileColor: null});
+}
+
+function getRootBody(body)
+{
+    if (body.parent === body) {
+        return body;
+    }
+    while (body.parent !== body)
+    {
+        body = body.parent;
+    }
+    return body;
 }
