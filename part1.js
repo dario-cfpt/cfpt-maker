@@ -263,6 +263,7 @@ function create()
 
             if (bodyA === playerBody || bodyB === playerBody)
             {
+                console.log("ee");
                 continue;
             } else if (bodyA === bottom || bodyB === bottom)
             {
@@ -277,18 +278,14 @@ function create()
             {
                 playerController.numTouching.right += 1;
             }
-            if ((getRootBody(bodyB).label === 'dangerousTile') ||
-                    (getRootBody(bodyA).label === 'dangerousTile'))
+            if ((getRootBody(bodyB).label === 'dangerousTile') && bodyA === bottom  ||
+                    (getRootBody(bodyA).label === 'dangerousTile' && bodyB === bottom))
             {
                 matterSprite.destroy();
                 playerController.matterSprite = null;
                 restart.call(game.scene.scenes[0]);
                 return;
             }
-
-
-
-
         }
     });
 
