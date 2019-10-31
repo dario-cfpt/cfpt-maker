@@ -1,129 +1,38 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const sequelize_1 = require("sequelize");
-const sequelize = new sequelize_1.Sequelize("cfpt_maker", "root", "", {
-    host: "localhost",
-    dialect: "mysql",
-});
-// Typescript class
-class User extends sequelize_1.Model {
-}
-class Map extends sequelize_1.Model {
-}
-class Asset extends sequelize_1.Model {
-}
-class Rating extends sequelize_1.Model {
-}
-class Score extends sequelize_1.Model {
-}
-// Sequelize models
-User.init({
-    id: {
-        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    email: {
-        type: sequelize_1.DataTypes.STRING(50),
-        allowNull: false,
-    },
-    username: {
-        type: sequelize_1.DataTypes.STRING(50),
-        allowNull: false,
-    },
-    password: {
-        type: sequelize_1.DataTypes.STRING(50),
-        allowNull: false,
-    }
-}, {
-    timestamps: false,
-    tableName: 'users',
-    sequelize: sequelize,
-});
-Map.init({
-    id: {
-        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    name: {
-        type: sequelize_1.DataTypes.STRING(50),
-        allowNull: false,
-    },
-    filepath: {
-        type: sequelize_1.DataTypes.STRING(128),
-        allowNull: false,
-    },
-    creationDate: {
-        type: sequelize_1.DataTypes.DATE,
-        allowNull: false,
-    }
-}, {
-    timestamps: false,
-    tableName: 'maps',
-    sequelize: sequelize,
-});
-Asset.init({
-    id: {
-        type: sequelize_1.DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-    },
-    name: {
-        type: sequelize_1.DataTypes.STRING(50),
-        allowNull: false,
-    },
-    filepath: {
-        type: sequelize_1.DataTypes.STRING(128),
-        allowNull: false,
-    },
-}, {
-    timestamps: false,
-    tableName: 'assets',
-    sequelize: sequelize,
-});
-Rating.init({
-    like: {
-        type: sequelize_1.DataTypes.BOOLEAN,
-        allowNull: false,
-    }
-}, {
-    timestamps: false,
-    tableName: 'ratings',
-    sequelize: sequelize,
-});
-Score.init({
-    score: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
-    }
-}, {
-    timestamps: false,
-    tableName: 'scores',
-    sequelize: sequelize,
-});
+const Sequelize_1 = require("./Sequelize");
+const Asset_1 = require("./models/Asset");
+exports.Asset = Asset_1.Asset;
+const Map_1 = require("./models/Map");
+exports.Map = Map_1.Map;
+const Rating_1 = require("./models/Rating");
+exports.Rating = Rating_1.Rating;
+const Score_1 = require("./models/Score");
+exports.Score = Score_1.Score;
+const User_1 = require("./models/User");
+exports.User = User_1.User;
 // Sequelize associations
-Map.belongsTo(User, { foreignKey: { name: "userId", allowNull: false }, onDelete: 'CASCADE' });
-User.hasMany(Map, { foreignKey: { name: "userId", allowNull: false }, onDelete: 'CASCADE' });
-Map.belongsTo(Asset, { foreignKey: { name: "assetId", allowNull: false }, onDelete: 'CASCADE' });
-Asset.hasMany(Map, { foreignKey: { name: "assetId", allowNull: false }, onDelete: 'CASCADE' });
-User.belongsToMany(Map, { foreignKey: { name: "userId" }, through: Rating });
-Map.belongsToMany(User, { foreignKey: { name: "mapId" }, through: Rating });
-User.belongsToMany(Map, { foreignKey: { name: "userId" }, through: Score });
-Map.belongsToMany(User, { foreignKey: { name: "mapId" }, through: Score });
+Map_1.Map.belongsTo(User_1.User, { foreignKey: { name: "userId", allowNull: false }, onDelete: 'CASCADE' });
+User_1.User.hasMany(Map_1.Map, { foreignKey: { name: "userId", allowNull: false }, onDelete: 'CASCADE' });
+Map_1.Map.belongsTo(Asset_1.Asset, { foreignKey: { name: "assetId", allowNull: false }, onDelete: 'CASCADE' });
+Asset_1.Asset.hasMany(Map_1.Map, { foreignKey: { name: "assetId", allowNull: false }, onDelete: 'CASCADE' });
+User_1.User.belongsToMany(Map_1.Map, { foreignKey: { name: "userId" }, through: Rating_1.Rating });
+Map_1.Map.belongsToMany(User_1.User, { foreignKey: { name: "mapId" }, through: Rating_1.Rating });
+User_1.User.belongsToMany(Map_1.Map, { foreignKey: { name: "userId" }, through: Score_1.Score });
+Map_1.Map.belongsToMany(User_1.User, { foreignKey: { name: "mapId" }, through: Score_1.Score });
 // Create tables if not exists
-sequelize.sync();
+Sequelize_1.sequelize.sync();
 function stuff() {
     return __awaiter(this, void 0, void 0, function* () {
     });
 }
-exports.stuff = stuff;
 //# sourceMappingURL=db.js.map
