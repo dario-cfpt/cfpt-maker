@@ -25,6 +25,8 @@ var text;
 var cam;
 var smoothedControls;
 var map;
+var layer;
+var matterSprite;
 
 
 // Smoothed horizontal controls helper. This gives us a value between -1 and 1 depending on how long
@@ -79,7 +81,7 @@ function create()
 {
     map = this.make.tilemap({key: 'map'}); //Generate the map
     var tileset = map.addTilesetImage('kenney_redux_64x64'); //Apply this texture
-    var layer = map.createDynamicLayer(0, tileset, 0, 0);
+    layer = map.createDynamicLayer(0, tileset, 0, 0);
 
     // Set up the layer to have matter bodies. Any colliding tiles will be given a Matter body.
     map.setCollisionByProperty({collides: true});
@@ -148,8 +150,8 @@ function create()
     var sensor = map.findObject('Sensors', function (obj) {
         return obj.name === 'Button Press Sensor';
     });
-    
- 
+
+
     var center = M.Vertices.centre(sensor.polygon); // Matter places shapes by center of mass
     var sensorBody = this.matter.add.fromVertices(
             sensor.x + center.x, sensor.y + center.y,
@@ -193,6 +195,17 @@ function create()
     // Use matter events to detect whether the player is touching a surface to the left, right or
     // bottom.
 
+
+    // Change the label of the Matter body on the tiles that should kill the bouncing balls. This
+    // makes it easier to check Matter collisions.
+    layer.forEachTile(function (tile) {
+        // In Tiled, the platform tiles have been given a "type" property which is a string
+        if (tile.properties.type === 'lava' || tile.properties.type === 'spike')
+        {
+            tile.physics.matterBody.body.label = 'dangerousTile';
+        }
+    });
+
     // Loop over the active colliding pairs and count the surfaces the player is touching.
     this.matter.world.on('collisionstart', function (event) {
         for (var i = 0; i < event.pairs.length; i++)
@@ -229,6 +242,15 @@ function create()
                         }.bind(this, j)
                     });
                 }
+            }
+
+            if ((bodyA === playerBody && getRootBody(bodyB).label === 'dangerousTile') ||
+                    (bodyB === playerBody && getRootBody(bodyA).label === 'dangerousTile'))
+            {
+                matterSprite.destroy();
+                playerController.matterSprite = null;
+                restart.call(this);
+                return;
             }
         }
     }, this);
@@ -296,7 +318,7 @@ function create()
 
 function update(time, delta)
 {
-    var matterSprite = playerController.matterSprite;
+    matterSprite = playerController.matterSprite;
 
     if (!matterSprite) {
         return;
@@ -316,6 +338,9 @@ function update(time, delta)
     var oldVelocityX;
     var targetVelocityX;
     var newVelocityX;
+    var layerCoordX = Math.ceil(matterSprite.x / 64 - 1);
+    var layerCoordY = Math.ceil(matterSprite.y / 64 - 1);
+    //  console.log(layer.getTileAt(14, 16));
 
     if (cursors.left.isDown && !playerController.blocked.left)
     {
@@ -345,6 +370,16 @@ function update(time, delta)
     {
         smoothedControls.reset();
         matterSprite.anims.play('idle', true);
+    }
+
+
+    var currentL = layer.getTileAt(layerCoordX, layerCoordY);
+    if (currentL != null && currentL.index == 119)
+    {
+        matterSprite.destroy();
+        playerController.matterSprite = null;
+        restart.call(this);
+        return;
     }
 
     // Jumping & wall jumping
@@ -417,4 +452,17 @@ function restart()
         },
         callbackScope: this
     });
+}
+
+
+function getRootBody(body)
+{
+    if (body.parent === body) {
+        return body;
+    }
+    while (body.parent !== body)
+    {
+        body = body.parent;
+    }
+    return body;
 }
