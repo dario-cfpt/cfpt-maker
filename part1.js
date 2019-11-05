@@ -94,6 +94,14 @@ function create()
     cursors = this.input.keyboard.createCursorKeys();
     smoothedControls = new SmoothedHorionztalControl(0.0005);
 
+    layer.forEachTile(function (tile) {
+        // In Tiled, the platform tiles have been given a "type" property which is a string
+        if (tile.properties.type === 'lava' || tile.properties.type === 'spike')
+        {
+            tile.physics.matterBody.body.label = 'dangerousTile';
+        }
+    });
+
     // The player is a collection of bodies and sensors
     playerController = {
         matterSprite: this.matter.add.sprite(0, 0, 'player', 4),
@@ -215,10 +223,9 @@ function create()
             if ((bodyA === playerBody && bodyB === sensorBody) ||
                     (bodyA === sensorBody && bodyB === playerBody))
             {
-                console.log("ee");
                 this.matter.world.remove(sensorBody);
 
-                var buttonTile = layer.getTileAt(14, 16);
+                var buttonTile = layer.getTileAt(14, 16); //start at 0
 
                 // Change the tile to the new index (a "pressed" button tile) and tell the existing
                 // matter body to update itself from the Tiled collision data.
@@ -232,7 +239,7 @@ function create()
                         delay: (j - 5) * 50,
                         callback: function (x)
                         {
-                            var bridgeTile = layer.putTileAt(12, x, 12);
+                            var bridgeTile = layer.putTileAt(12, x, 12); //(id,x,y)
 
                             // When creating a new tile that didn't already have a tile body, you
                             // can use the tileBody factory method. See
@@ -277,6 +284,7 @@ function create()
 
             if (bodyA === playerBody || bodyB === playerBody)
             {
+                console.log("ee");
                 continue;
             } else if (bodyA === bottom || bodyB === bottom)
             {
@@ -291,6 +299,14 @@ function create()
             {
                 playerController.numTouching.right += 1;
             }
+            if ((getRootBody(bodyB).label === 'dangerousTile') && bodyA === bottom  ||
+                    (getRootBody(bodyA).label === 'dangerousTile' && bodyB === bottom))
+            {
+                matterSprite.destroy();
+                playerController.matterSprite = null;
+                restart.call(game.scene.scenes[0]);
+                return;
+            }
         }
     });
 
@@ -301,9 +317,9 @@ function create()
         playerController.blocked.bottom = playerController.numTouching.bottom > 0 ? true : false;
     });
 
+//EVENT CLICK 
     this.input.on('pointerdown', function () {
-        this.matter.world.drawDebug = !this.matter.world.drawDebug;
-        this.matter.world.debugGraphic.visible = this.matter.world.drawDebug;
+
     }, this);
 
     text = this.add.text(16, 16, '', {
@@ -314,6 +330,10 @@ function create()
     });
     text.setScrollFactor(0);
     updateText();
+
+    //For debug
+    debugGraphics = this.add.graphics();
+    debugGraphics.visible = !debugGraphics.visible;
 }
 
 function update(time, delta)
@@ -408,6 +428,22 @@ function update(time, delta)
         }
     }
 
+    //bind debug
+    if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.G)))
+    {
+
+        debugGraphics.visible = !debugGraphics.visible;
+        if (debugGraphics.visible)
+        {
+            drawDebug();
+        }
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)))
+    {
+        this.matter.world.drawDebug = !this.matter.world.drawDebug;
+        this.matter.world.debugGraphic.visible = this.matter.world.drawDebug;
+    }
+
     smoothMoveCameraTowards(matterSprite, 0.9);
     updateText();
 }
@@ -435,6 +471,7 @@ function smoothMoveCameraTowards(target, smoothFactor)
 }
 
 
+
 /**
  * RESTART A GAME
  */
@@ -442,7 +479,7 @@ function restart()
 {
     cam.fade(500, 0, 0, 0);
     cam.shake(250, 0.01);
-
+    
     this.time.addEvent({
         delay: 500,
         callback: function ()
@@ -454,6 +491,12 @@ function restart()
     });
 }
 
+
+function drawDebug()
+{
+    debugGraphics.clear();
+    map.renderDebug(debugGraphics, {tileColor: null});
+}
 
 function getRootBody(body)
 {
