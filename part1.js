@@ -27,7 +27,11 @@ var smoothedControls;
 var map;
 var layer;
 var matterSprite;
-
+var life = 1;
+var timer = 0;
+var timerInterval = setInterval(function () {
+    timer--;
+}, 1000);
 
 // Smoothed horizontal controls helper. This gives us a value between -1 and 1 depending on how long
 // the player has been pressing left or right, respectively.
@@ -71,14 +75,27 @@ var SmoothedHorionztalControl = new Phaser.Class({
 
 function preload()
 {
-    this.load.tilemapTiledJSON('map', 'assets/tilemaps/maps/test_layout.json'); //The map
-    this.load.image('kenney_redux_64x64', 'assets/tilemaps/tiles/kenney_redux_64x64.png'); //The Asset
-    this.load.spritesheet('player', 'assets/sprites/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
-    this.load.image('box', 'assets/sprites/box-item-boxed.png'); //Bonus
+    if (life == 0)
+    {
+        this.load.image('pic', 'end.png');
+    } else
+    {
+
+        this.load.tilemapTiledJSON('map', 'assets/tilemaps/maps/test_layout.json'); //The map
+        this.load.image('kenney_redux_64x64', 'assets/tilemaps/tiles/kenney_redux_64x64.png'); //The Asset
+        this.load.spritesheet('player', 'assets/sprites/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
+        this.load.image('box', 'assets/sprites/box-item-boxed.png'); //Bonus
+    }
 }
 
 function create()
 {
+    if (life == 0)
+    {
+        this.matter.add.image(400, 300, 'pic');
+        clearInterval(timerInterval);
+    }
+
     map = this.make.tilemap({key: 'map'}); //Generate the map
     var tileset = map.addTilesetImage('kenney_redux_64x64'); //Apply this texture
     layer = map.createDynamicLayer(0, tileset, 0, 0);
@@ -101,6 +118,7 @@ function create()
             tile.physics.matterBody.body.label = 'dangerousTile';
         }
     });
+
 
     // The player is a collection of bodies and sensors
     playerController = {
@@ -155,18 +173,6 @@ function create()
 
     // There is a "Button Press Sensor" polygon in the "Sensors" layer in Tiled. We can use this to
     // map out the "pressable" hitbox for the button.
-    var sensor = map.findObject('Sensors', function (obj) {
-        return obj.name === 'Button Press Sensor';
-    });
-
-
-    var center = M.Vertices.centre(sensor.polygon); // Matter places shapes by center of mass
-    var sensorBody = this.matter.add.fromVertices(
-            sensor.x + center.x, sensor.y + center.y,
-            sensor.polygon,
-            {isStatic: true, isSensor: true}
-    );
-
 
     playerController.matterSprite
             .setExistingBody(compoundBody)
@@ -220,36 +226,6 @@ function create()
         {
             var bodyA = event.pairs[i].bodyA;
             var bodyB = event.pairs[i].bodyB;
-            if ((bodyA === playerBody && bodyB === sensorBody) ||
-                    (bodyA === sensorBody && bodyB === playerBody))
-            {
-                this.matter.world.remove(sensorBody);
-
-                var buttonTile = layer.getTileAt(14, 16); //start at 0
-
-                // Change the tile to the new index (a "pressed" button tile) and tell the existing
-                // matter body to update itself from the Tiled collision data.
-                buttonTile.index = 93;
-                buttonTile.physics.matterBody.setFromTileCollision();
-
-                // Animate a bridge of new tiles opening up over the lava.
-                for (var j = 5; j <= 14; j++)
-                {
-                    this.time.addEvent({
-                        delay: (j - 5) * 50,
-                        callback: function (x)
-                        {
-                            var bridgeTile = layer.putTileAt(12, x, 12); //(id,x,y)
-
-                            // When creating a new tile that didn't already have a tile body, you
-                            // can use the tileBody factory method. See
-                            // Phaser.Physics.Matter.TileBody for options. This will default to
-                            // adding a body with the Tiled collision data here.
-                            this.matter.add.tileBody(bridgeTile);
-                        }.bind(this, j)
-                    });
-                }
-            }
 
             if ((bodyA === playerBody && getRootBody(bodyB).label === 'dangerousTile') ||
                     (bodyB === playerBody && getRootBody(bodyA).label === 'dangerousTile'))
@@ -284,7 +260,6 @@ function create()
 
             if (bodyA === playerBody || bodyB === playerBody)
             {
-                console.log("ee");
                 continue;
             } else if (bodyA === bottom || bodyB === bottom)
             {
@@ -298,14 +273,6 @@ function create()
             } else if ((bodyA === right && bodyB.isStatic) || (bodyB === right && bodyA.isStatic))
             {
                 playerController.numTouching.right += 1;
-            }
-            if ((getRootBody(bodyB).label === 'dangerousTile') && bodyA === bottom  ||
-                    (getRootBody(bodyA).label === 'dangerousTile' && bodyB === bottom))
-            {
-                matterSprite.destroy();
-                playerController.matterSprite = null;
-                restart.call(game.scene.scenes[0]);
-                return;
             }
         }
     });
@@ -325,7 +292,6 @@ function create()
     text = this.add.text(16, 16, '', {
         fontSize: '20px',
         padding: {x: 20, y: 10},
-        backgroundColor: '#ffffff',
         fill: '#000000'
     });
     text.setScrollFactor(0);
@@ -362,34 +328,37 @@ function update(time, delta)
     var layerCoordY = Math.ceil(matterSprite.y / 64 - 1);
     //  console.log(layer.getTileAt(14, 16));
 
-    if (cursors.left.isDown && !playerController.blocked.left)
+    if (life != 0)
     {
-        smoothedControls.moveLeft(delta);
-        matterSprite.anims.play('left', true);
+        if (cursors.left.isDown && !playerController.blocked.left)
+        {
+            smoothedControls.moveLeft(delta);
+            matterSprite.anims.play('left', true);
 
-        // Lerp the velocity towards the max run using the smoothed controls. This simulates a
-        // player controlled acceleration.
-        oldVelocityX = matterSprite.body.velocity.x;
-        targetVelocityX = -playerController.speed.run;
-        newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, -smoothedControls.value);
+            // Lerp the velocity towards the max run using the smoothed controls. This simulates a
+            // player controlled acceleration.
+            oldVelocityX = matterSprite.body.velocity.x;
+            targetVelocityX = -playerController.speed.run;
+            newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, -smoothedControls.value);
 
-        matterSprite.setVelocityX(newVelocityX);
-    } else if (cursors.right.isDown && !playerController.blocked.right)
-    {
-        smoothedControls.moveRight(delta);
-        matterSprite.anims.play('right', true);
+            matterSprite.setVelocityX(newVelocityX);
+        } else if (cursors.right.isDown && !playerController.blocked.right)
+        {
+            smoothedControls.moveRight(delta);
+            matterSprite.anims.play('right', true);
 
-        // Lerp the velocity towards the max run using the smoothed controls. This simulates a
-        // player controlled acceleration.
-        oldVelocityX = matterSprite.body.velocity.x;
-        targetVelocityX = playerController.speed.run;
-        newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, smoothedControls.value);
+            // Lerp the velocity towards the max run using the smoothed controls. This simulates a
+            // player controlled acceleration.
+            oldVelocityX = matterSprite.body.velocity.x;
+            targetVelocityX = playerController.speed.run;
+            newVelocityX = Phaser.Math.Linear(oldVelocityX, targetVelocityX, smoothedControls.value);
 
-        matterSprite.setVelocityX(newVelocityX);
-    } else
-    {
-        smoothedControls.reset();
-        matterSprite.anims.play('idle', true);
+            matterSprite.setVelocityX(newVelocityX);
+        } else
+        {
+            smoothedControls.reset();
+            matterSprite.anims.play('idle', true);
+        }
     }
 
 
@@ -400,6 +369,12 @@ function update(time, delta)
         playerController.matterSprite = null;
         restart.call(this);
         return;
+    }
+    if (currentL != null && currentL.index == 166)
+    {
+        currentL.index = 190;
+        layer.culledTiles.find(x => x.index == 131).index = 107;
+        layer.culledTiles.find(x => x.index == 143).index = 119;
     }
 
     // Jumping & wall jumping
@@ -451,9 +426,8 @@ function update(time, delta)
 function updateText()
 {
     text.setText([
-        'Arrow keys to move. Press "Up" to jump.',
-        'You can wall jump!',
-        'Click to toggle rendering Matter debug.'
+        'Timer : ' + timer,
+        'Life  : ' + life
                 // 'Debug:',
                 // '\tBottom blocked: ' + playerController.blocked.bottom,
                 // '\tLeft blocked: ' + playerController.blocked.left,
@@ -479,13 +453,14 @@ function restart()
 {
     cam.fade(500, 0, 0, 0);
     cam.shake(250, 0.01);
-    
+
     this.time.addEvent({
         delay: 500,
         callback: function ()
         {
             cam.resetFX();
             this.scene.restart();
+            life--;
         },
         callbackScope: this
     });
