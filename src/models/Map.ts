@@ -3,7 +3,9 @@ import {sequelize, DataTypes, Model} from "../Sequelize";
 class Map extends Model {
     public id!: number;
     public name!: string;
-    public filepath!: string;
+    public mapContent!: string;
+    public nbRow!: number;
+    public nbCol!: number;
     public creationDate!: Date;
 }
 
@@ -17,8 +19,16 @@ Map.init({
         type: DataTypes.STRING(50),
         allowNull: false,
     },
-    filepath: {
-        type: DataTypes.STRING(128),
+    mapContent: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+    },
+    nbRow: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    nbCol: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     },
     creationDate: {

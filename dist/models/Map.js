@@ -14,8 +14,16 @@ Map.init({
         type: Sequelize_1.DataTypes.STRING(50),
         allowNull: false,
     },
-    filepath: {
-        type: Sequelize_1.DataTypes.STRING(128),
+    mapContent: {
+        type: Sequelize_1.DataTypes.TEXT,
+        allowNull: false,
+    },
+    nbRow: {
+        type: Sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
+    nbCol: {
+        type: Sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
     creationDate: {
