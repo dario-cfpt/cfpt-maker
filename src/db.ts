@@ -14,11 +14,10 @@ User.hasMany(Map, {foreignKey: {name: "userId", allowNull: false}, onDelete: 'CA
 Map.belongsTo(Asset, {foreignKey: {name: "assetId", allowNull: false}, onDelete: 'CASCADE'});
 Asset.hasMany(Map, {foreignKey: {name: "assetId", allowNull: false}, onDelete: 'CASCADE'});
 
-User.belongsToMany(Map, {foreignKey: {name: "userId"}, through: Rating});
 Map.belongsToMany(User, {foreignKey: {name: "mapId"}, through: Rating});
-
-User.belongsToMany(Map, {foreignKey: {name: "userId"}, through: Score});
+User.hasMany(Rating);
 Map.belongsToMany(User, {foreignKey: {name: "mapId"}, through: Score});
+User.hasMany(Score);
 
 // Create tables if not exists
 sequelize.sync();
