@@ -5,26 +5,37 @@ function checkPassword(str) {
     return re.test(str);
 }
 
-$.fn.serializeObject = function()
-{
-    var o = {};
-    var a = this.serializeArray();
-    $.each(a, function() {
-        if (o[this.name] !== undefined) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-            o[this.name].push(this.value || '');
-        } else {
-            o[this.name] = this.value || '';
+function serialize() {
+    var myObject = new Object();
+    myObject.email = $("input#mail").val();
+    myObject.username = $("input#username").val();
+    myObject.password = $("input#password").val();
+    var myString = JSON.stringify(myObject);
+    return myString
+}
+
+function sendPost(result) {
+    $.ajax({
+        type: "POST",
+        url: 'http://127.0.0.1:3000/user',
+        data: result,
+        success: function() {
+            alert("Status: " + success);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            alert("Status: " + textStatus);
+            alert("Error: " + errorThrown);
+            console.log("Status: " + textStatus);
+            console.log("Error: " + errorThrown);
         }
     });
-    return o;
-};
+}
 
 $(function() {
-    $('form').submit(function() {
-        $('#result').text(JSON.stringify($('form').serializeObject()));
-        return false;
+    $('form').submit(function(e) {
+        if ($("input#password").val() == $("input#password-check").val()) {
+            sendPost(serialize());
+        }
+        e.preventDefault();
     });
 });
