@@ -37,7 +37,7 @@ var timerInterval = setInterval(function () {
     timer--;
     if (timer == 0)
     {
-        clearInterval(timerInterval);
+       
         matterSprite.destroy();
         playerController.matterSprite = null;
         restart.call(game.scene.scenes[0]);
@@ -93,10 +93,9 @@ function preload()
     } else
     {
 
-        this.load.tilemapTiledJSON('map', 'assets/tilemaps/maps/test_layout.json'); //The map
-        this.load.image('kenney_redux_64x64', 'assets/tilemaps/tiles/kenney_redux_64x64.png'); //The Asset
-        this.load.spritesheet('player', 'assets/sprites/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
-        this.load.image('box', 'assets/sprites/box-item-boxed.png'); //Bonus
+        this.load.tilemapTiledJSON('map', '../../config/test_layout.json'); //The map
+        this.load.image('kenney_redux_64x64', '../../config/kenney_redux_64x64.png'); //The Asset
+        this.load.spritesheet('player', '../../config/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
     }
 }
 
@@ -191,9 +190,6 @@ function create()
             .setFixedRotation() // Sets max inertia to prevent rotation
             .setPosition(630, 1000);
 
-    this.matter.add.image(630, 750, 'box');
-    this.matter.add.image(630, 650, 'box');
-    this.matter.add.image(630, 550, 'box');
 
     cam = this.cameras.main;
     cam.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
@@ -473,6 +469,7 @@ function restart()
             cam.resetFX();
             this.scene.restart();
             life--;
+             clearInterval(timerInterval);
             timer = TIME;
             timerInterval = setInterval(function () {
                 timer--;
