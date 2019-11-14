@@ -10,23 +10,32 @@ function sendPost(user) {
         type: "POST",
         url: 'http://127.0.0.1:3000/user',
         data: user,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
             // TODO: manage response
         },
-        error: function(e) {
+        error: function (e) {
             console.log(e.responseText);
         }
     });
 }
 
-$(function() {
-    $('form').submit(function(e) {
+function encodePassword(params) {
+    Pbkdf2PasswordEncoder()
+    Pbkdf2PasswordEncoder(java.lang.CharSequence secret)
+    Pbkdf2PasswordEncoder(java.lang.CharSequence secret, int iterations, int hashWidth)
+
+    Pbkdf2PasswordEncoder encoder = new Pbkdf2PasswordEncoder("secret", 10000, 128);
+    String encodedPassword = encoder.encode("UserPassword");
+}
+
+$(function () {
+    $('form').submit(function (e) {
         if ($("input#password").val() == $("input#password-check").val()) {
             const user = {};
             user.email = $("input#mail").val().trim();
             user.username = $("input#username").val().trim();
-            user.password = $("input#password").val();
+            user.password = encodePassword();
             sendPost(user);
         }
         e.preventDefault();
