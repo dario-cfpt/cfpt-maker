@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Editeur</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <input id="w" onchange="changeSizeW(this.value)" type="number" value="20"/>
+        <input id="h" onchange="changeSizeH(this.value)" type="number" value="20"/>
+        <div id="map">
+        </div>
+        <script>
+            var mapData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                169, 13, 13, 0, 0, 0, 0, 0, 131, 0, 0, 0, 0, 0, 0, 0, 0, 13, 13, 157,
+                0, 2, 2, 0, 0, 0, 0, 0, 143, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 0, 0, 85, 73, 73, 73, 73, 61, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 166, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 13, 13, 49, 0, 0, 0, 0, 37, 13, 13, 0, 0, 2, 2, 0,
+                0, 2, 2, 189, 189, 2, 2, 121, 49, 0, 0, 37, 109, 2, 2, 189, 189, 2, 2, 0,
+                145, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 133];
+
+
+            var sizeX = w.value;
+            var sizeY = h.value;
+
+            function changeSizeW(newSize)
+            {
+                if (newSize > parseInt(sizeX)) //agrandisement
+                {
+                    console.log("ag")
+                    for (var i = 1; i <= sizeY; i++) {
+                        mapData.splice(i * newSize - 1, 0, "0");
+                        //console.log(i * newSize - 1);
+                    }
+                } else //RETRECICEMENT
+                {
+                    console.log("ret")
+                    for (var i = 1; i <= sizeY + 1; i++) {
+                        mapData.splice(i * newSize, 1);
+                        //console.log(newSize);
+                    }
+                }
+                drawGrid(mapData);
+
+            }
+            function changeSizeH(newSize)
+            {
+                if (newSize > parseInt(sizeY)) //agrandisement
+                {
+                    console.log("ag")
+                    for (var i = 1; i <= sizeX; i++) {
+                        mapData.push(0);
+                    }
+                } else //RETRECICEMENT
+                {
+                    console.log("ret")
+                    mapData.splice(mapData.length-1-sizeX, sizeX); 
+                }
+                drawGrid(mapData);
+
+            }
+            
+            
+            function drawGrid(mapData)
+            {
+                sizeX = w.value;
+                sizeY = h.value;
+
+                map.innerHTML = "";
+                map.style.width = "max-content";
+                var table = document.createElement("table");
+                table.style.borderCollapse = "collapse"
+                table.style.backgroundColor = "#19AAE5";
+                for (var i = 0; i < sizeY; i++) { //Ligne
+                    var tr = document.createElement("tr");
+                    for (var j = 0; j < sizeX; j++) { //col
+                        createImg(tr, mapData[i * sizeX + j]);
+                    }
+                    table.append(tr);
+                }
+                map.appendChild(table);
+            }
+
+            function createImg(tr, value)
+            {
+                //  console.log(value);
+                height = parseInt(value / 12);
+                width = value % 12 - 1;
+
+                var myDiv = document.createElement("td");
+                if (value == 0)
+                {
+                    myDiv.style.backgroundColor = "#19AAE5";
+                } else
+                {
+                    myDiv.style = 'background:url("assets/tilemaps/tiles/kenney_redux_64x64.png") -' + width * 64 + 'px -' + height * 64 + 'px; background-size: 768px,1024px;';
+
+                }
+                myDiv.style.width = "64px";
+                myDiv.style.height = "64px";
+                myDiv.style.display = "inline-block";
+                myDiv.style.border = "solid 1px black";
+                myDiv.style.boxSizing = "border-box";
+                myDiv.addEventListener("click", function () {
+                    updateImg(id);
+                });
+                tr.append(myDiv);
+            }
+// A chaque clique on appel le service web pour changer une case et on refresh toute la map
+            function updateImg(id)
+            {
+                console.log(id);
+            }
+
+            drawGrid(mapData);
+        </script>
+    </body>
+</html>
