@@ -207,7 +207,5 @@ nbdist/
 
 .idea/*
 
-#folder for phaser.io
-/phaser-3.19.0
-
-/assets
+website/assets/
+phaser-3.19.0/
