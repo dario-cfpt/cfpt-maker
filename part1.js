@@ -18,6 +18,10 @@ var config = {
     }
 };
 
+const TIME = 10;
+const LIFE = 2;
+
+
 var game = new Phaser.Game(config);
 var playerController;
 var cursors;
@@ -27,10 +31,18 @@ var smoothedControls;
 var map;
 var layer;
 var matterSprite;
-var life = 1;
-var timer = 0;
+var life = LIFE;
+var timer = TIME;
 var timerInterval = setInterval(function () {
     timer--;
+    if (timer == 0)
+    {
+        clearInterval(timerInterval);
+        matterSprite.destroy();
+        playerController.matterSprite = null;
+        restart.call(game.scene.scenes[0]);
+        return;
+    }
 }, 1000);
 
 // Smoothed horizontal controls helper. This gives us a value between -1 and 1 depending on how long
@@ -461,6 +473,18 @@ function restart()
             cam.resetFX();
             this.scene.restart();
             life--;
+            timer = TIME;
+            timerInterval = setInterval(function () {
+                timer--;
+                if (timer == 0)
+                {
+                    clearInterval(timerInterval);
+                    matterSprite.destroy();
+                    playerController.matterSprite = null;
+                    restart.call(game.scene.scenes[0]);
+                    return;
+                }
+            }, 1000);
         },
         callbackScope: this
     });
