@@ -11,12 +11,13 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous">
     </script>
     <script src="js/login.js"></script>
-
-    </script>
     <title>CFPT-Maker</title>
 </head>
 
 <body>
+    <?php
+        include 'nav.php';
+    ?>
     <div class="h-100 row align-items-center">
         <form name="login" class="col-4 mx-auto">
             <div class="form-group row">
@@ -41,7 +42,7 @@
                                 <i class="fa fa-unlock-alt"></i>
                             </div>
                         </div>
-                        <input id="password" name="password" type="password" class="form-control" required="required" aria-describedby="passwordHelpBlock" oninput="checkPassword(this.value);">
+                        <input id="password" name="password" type="password" class="form-control" required="required" aria-describedby="passwordHelpBlock">
                     </div>
                 </div>
             </div>
