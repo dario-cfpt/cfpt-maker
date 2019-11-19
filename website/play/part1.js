@@ -18,8 +18,8 @@ var config = {
     }
 };
 
-const TIME = 10;
-const LIFE = 2;
+const TIME = 500;
+const LIFE = 3;
 
 
 var game = new Phaser.Game(config);
