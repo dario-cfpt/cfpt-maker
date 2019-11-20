@@ -38,6 +38,7 @@ User.init({
     ],
     timestamps: false,
     tableName: 'users',
+    collate: 'utf8mb4_bin',
     sequelize: sequelize,
 });
 

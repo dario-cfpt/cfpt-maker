@@ -31,29 +31,42 @@ app.get('/', (req, res) => {
 
 // Login for user
 app.post('/login', (req, res) => {
-    const email = req.body.email;
-    const username = req.body.username;
+    let email = req.body.email;
+    let username = req.body.username;
     const password = req.body.password;
 
     if ((email || username) && password) {
-        if (email !== undefined) email.trim();
-        if (username !== undefined) username.trim();
+        email = (email !== undefined) ? email.trim() : null;
+        username = (username !== undefined) ? username.trim() : null;
 
         User.findOne({
             attributes: ["id", "username", "email"],
             where: {
                 password: password,
-                [Op.or]: [{email: email}, {username: username}],
+                [Op.or]: [
+                    {
+                        email: {
+                            [Op.like]: email,
+                        }
+                    },
+                    {
+                        username: {
+                            [Op.like]: username
+                        }
+                    }
+                ],
             }
         }).then(user => {
             if (user) {
                 res.status(status.OK).send(user);
             } else {
-                res.status(status.INTERNAL_SERVER_ERROR).send("Username and/or password incorrect");
+                res.status(status.INTERNAL_SERVER_ERROR).send("Email/Username and/or password incorrect");
             }
         }).catch(err => {
             res.status(status.INTERNAL_SERVER_ERROR).send(err);
         });
+    } else {
+        res.status(status.INTERNAL_SERVER_ERROR).send("The field 'email'/'username' and/or the field 'password' is missing");
     }
 });
 
@@ -114,28 +127,28 @@ app.get('/user/:userId', (req, res) => {
 });
 
 app.get('/map/:mapId', (req, res) => {
-   const mapId = req.params.mapId;
+    const mapId = req.params.mapId;
 
-   if (mapId) {
-       Map.findOne({
-           attributes: ["id", "name", "mapContent", "nbRow", "nbCol", "creationDate"],
-           where: {
-               id: mapId,
-           },
-           include: [
-               {
-                   model: Asset,
-                   attributes: ["filepath"]
-               }
-           ]
-       }).then(map => {
-           res.status(status.OK).send(map);
-       }).catch(err => {
-           sendError(res, err, "Une erreur est survenue.");
-       });
-   } else {
-       res.status(status.INTERNAL_SERVER_ERROR).send("Id map inconnu");
-   }
+    if (mapId) {
+        Map.findOne({
+            attributes: ["id", "name", "mapContent", "nbRow", "nbCol", "creationDate"],
+            where: {
+                id: mapId,
+            },
+            include: [
+                {
+                    model: Asset,
+                    attributes: ["filepath"]
+                }
+            ]
+        }).then(map => {
+            res.status(status.OK).send(map);
+        }).catch(err => {
+            sendError(res, err, "Une erreur est survenue.");
+        });
+    } else {
+        res.status(status.INTERNAL_SERVER_ERROR).send("Id map inconnu");
+    }
 });
 
 app.get('/map/all', (req, res) => {
@@ -202,23 +215,23 @@ app.post('/asset', (req, res) => {
 
 // Insert a score
 app.post('/score', (req, res) => {
-   const score = req.body.score;
-   const mapId = req.body.mapId;
-   const userId = req.body.userId;
+    const score = req.body.score;
+    const mapId = req.body.mapId;
+    const userId = req.body.userId;
 
-   if (score && mapId && userId) {
-       Score.create({
-           score: score,
-           mapId: mapId,
-           userId: userId,
-       }).then(score => {
-           res.status(status.OK).send(score);
-       }).catch(err => {
-           sendError(res, err, "Une erreur est survenue lors de l'insertion du score.");
-       })
-   } else {
-       res.sendStatus(status.INTERNAL_SERVER_ERROR);
-   }
+    if (score && mapId && userId) {
+        Score.create({
+            score: score,
+            mapId: mapId,
+            userId: userId,
+        }).then(score => {
+            res.status(status.OK).send(score);
+        }).catch(err => {
+            sendError(res, err, "Une erreur est survenue lors de l'insertion du score.");
+        })
+    } else {
+        res.sendStatus(status.INTERNAL_SERVER_ERROR);
+    }
 });
 
 // Insert a rating

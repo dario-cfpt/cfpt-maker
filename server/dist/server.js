@@ -26,30 +26,42 @@ app.get('/', (req, res) => {
 });
 // Login for user
 app.post('/login', (req, res) => {
-    const email = req.body.email;
-    const username = req.body.username;
+    let email = req.body.email;
+    let username = req.body.username;
     const password = req.body.password;
     if ((email || username) && password) {
-        if (email !== undefined)
-            email.trim();
-        if (username !== undefined)
-            username.trim();
+        email = (email !== undefined) ? email.trim() : null;
+        username = (username !== undefined) ? username.trim() : null;
         User.findOne({
             attributes: ["id", "username", "email"],
             where: {
                 password: password,
-                [sequelize_1.Op.or]: [{ email: email }, { username: username }],
+                [sequelize_1.Op.or]: [
+                    {
+                        email: {
+                            [sequelize_1.Op.like]: email,
+                        }
+                    },
+                    {
+                        username: {
+                            [sequelize_1.Op.like]: username
+                        }
+                    }
+                ],
             }
         }).then(user => {
             if (user) {
                 res.status(status.OK).send(user);
             }
             else {
-                res.status(status.INTERNAL_SERVER_ERROR).send("Username and/or password incorrect");
+                res.status(status.INTERNAL_SERVER_ERROR).send("Email/Username and/or password incorrect");
             }
         }).catch(err => {
             res.status(status.INTERNAL_SERVER_ERROR).send(err);
         });
+    }
+    else {
+        res.status(status.INTERNAL_SERVER_ERROR).send("The field 'email'/'username' and/or the field 'password' is missing");
     }
 });
 // Create new user

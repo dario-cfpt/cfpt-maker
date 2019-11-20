@@ -35,6 +35,7 @@ User.init({
     ],
     timestamps: false,
     tableName: 'users',
+    collate: 'utf8mb4_bin',
     sequelize: Sequelize_1.sequelize,
 });
 //# sourceMappingURL=User.js.map
