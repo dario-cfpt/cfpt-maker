@@ -4,7 +4,7 @@ function getMaps() {
         url: 'http://127.0.0.1:3000/map/all',
         success: function(response) {
             console.log("Status: " + textStatus);
-            //showMaps($response);
+            showMaps(response);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             console.log("Status: " + textStatus);
@@ -14,15 +14,15 @@ function getMaps() {
 
 function showMaps(response) {
     response.forEach(element => {
-        $(#maps).append(`
+        $('#madeBy').append(`
             <div class="col-md-3">
                 <div class="card">
-                    <a href="play/load.php?id=` + $element.map.id + `">
+                    <a href="play/load.php?id=` + element.id + `">
                     <img class="card-img-top w-100 d-block" style="height: 100px;">
                     <div class="card-body">
-                        <h4 class="card-title">` + $element.map.name + `</h4>
+                        <h4 class="card-title">` + element.name + `</h4>
                         </a>
-                        <p class="card-text"><a href="profile.php?id=` + $element.user.id + `">` + $element.user.username + `</a> | ` + $element.map.creationDate + `</p>
+                        <p class="card-text"><a href="profile.php?id=` + element.User.id + `">` + element.User.username + `</a> | ` + element.creationDate + `</p>
                     </div>
                 </div>
             </div>
