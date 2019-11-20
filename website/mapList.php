@@ -10,6 +10,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous">
     </script>
+    <script src="js/mapList.js"></script>
     <title>CFPT-Maker</title>
 </head>
 
@@ -19,24 +20,7 @@
     ?>
     <div style="margin: 20px;">
         <div class="container">
-            <div class="row">
-                <?php
-                    for ($i=0; $i < 20; $i++) { 
-                        echo'
-                                <div class="col-md-3">
-                                    <div class="card">
-                                        <a href="#">
-                                            <img class="card-img-top w-100 d-block" style="height: 100px;">
-                                            <div class="card-body">
-                                                <h4 class="card-title">My first map</h4>
-                                                </a>
-                                                <p class="card-text"><a href="#">Tom ryser</a> | 14.11.2019</p>
-                                            </div>
-                                    </div>
-                                </div>
-                        ';
-                    }
-                ?> 
+            <div class="row" id="maps">
             </div>
           </div>
         </div>
