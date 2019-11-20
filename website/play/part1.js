@@ -92,7 +92,6 @@ function preload()
         this.load.image('pic', 'end.png');
     } else
     {
-
         this.load.tilemapTiledJSON('map', '../../config/test_layout.json'); //The map
         this.load.image('kenney_redux_64x64', '../../config/kenney_redux_64x64.png'); //The Asset
         this.load.spritesheet('player', '../../config/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
@@ -109,19 +108,20 @@ function create()
 
     map = this.make.tilemap({key: 'map'}); //Generate the map
     var tileset = map.addTilesetImage('kenney_redux_64x64'); //Apply this texture
-    layer = map.createDynamicLayer(0, tileset, 0, 0);
+    layer = map.createDynamicLayer(0, tileset, 0, 0); // layer index, tileset, x, y
 
     // Set up the layer to have matter bodies. Any colliding tiles will be given a Matter body.
     map.setCollisionByProperty({collides: true});
     this.matter.world.convertTilemapLayer(layer);
-
-    // this.matter.world.setBounds(map.widthInPixels, map.heightInPixels);
     this.matter.world.createDebugGraphic();
     this.matter.world.drawDebug = false;
 
     cursors = this.input.keyboard.createCursorKeys();
-    smoothedControls = new SmoothedHorionztalControl(0.0005);
+    smoothedControls = new SmoothedHorionztalControl(0.001);
 
+
+    // Change the label of the Matter body on the tiles that should kill the bouncing balls. This
+    // makes it easier to check Matter collisions.
     layer.forEachTile(function (tile) {
         // In Tiled, the platform tiles have been given a "type" property which is a string
         if (tile.properties.type === 'lava' || tile.properties.type === 'spike')
@@ -155,8 +155,8 @@ function create()
         },
         lastJumpedAt: 0,
         speed: {
-            run: 7,
-            jump: 10
+            run: 6,
+            jump: 8
         }
     };
 
@@ -182,8 +182,6 @@ function create()
         restitution: 0.05 // Prevent body from sticking against a wall
     });
 
-    // There is a "Button Press Sensor" polygon in the "Sensors" layer in Tiled. We can use this to
-    // map out the "pressable" hitbox for the button.
 
     playerController.matterSprite
             .setExistingBody(compoundBody)
@@ -218,15 +216,6 @@ function create()
     // bottom.
 
 
-    // Change the label of the Matter body on the tiles that should kill the bouncing balls. This
-    // makes it easier to check Matter collisions.
-    layer.forEachTile(function (tile) {
-        // In Tiled, the platform tiles have been given a "type" property which is a string
-        if (tile.properties.type === 'lava' || tile.properties.type === 'spike')
-        {
-            tile.physics.matterBody.body.label = 'dangerousTile';
-        }
-    });
 
     // Loop over the active colliding pairs and count the surfaces the player is touching.
     this.matter.world.on('collisionstart', function (event) {
@@ -296,6 +285,7 @@ function create()
     this.input.on('pointerdown', function () {
 
     }, this);
+
 
     text = this.add.text(16, 16, '', {
         fontSize: '20px',
@@ -378,6 +368,7 @@ function update(time, delta)
         restart.call(this);
         return;
     }
+    //find a lever 
     if (currentL != null && currentL.index == 166)
     {
         currentL.index = 190;
@@ -436,10 +427,6 @@ function updateText()
     text.setText([
         'Timer : ' + timer,
         'Life  : ' + life
-                // 'Debug:',
-                // '\tBottom blocked: ' + playerController.blocked.bottom,
-                // '\tLeft blocked: ' + playerController.blocked.left,
-                // '\tRight blocked: ' + playerController.blocked.right
     ]);
 }
 
