@@ -12,7 +12,7 @@ function sendPost(user) {
         data: user,
         success: function(response) {
             console.log(response);
-            // TODO: manage response
+            location.href = "session.php?id=" + response.id + "&username=" + response.username + ""
         },
         error: function(e) {
             console.log(e.responseText);
