@@ -26,11 +26,16 @@ app.get('/', (req, res) => {
 });
 // Login for user
 app.post('/login', (req, res) => {
-    const email = req.body.email.trim();
-    const username = req.body.username.trim();
+    const email = req.body.email;
+    const username = req.body.username;
     const password = req.body.password;
     if ((email || username) && password) {
+        if (email !== undefined)
+            email.trim();
+        if (username !== undefined)
+            username.trim();
         User.findOne({
+            attributes: ["id", "username", "email"],
             where: {
                 password: password,
                 [sequelize_1.Op.or]: [{ email: email }, { username: username }],
@@ -77,17 +82,67 @@ app.get('/user/:userId', (req, res) => {
                 id: userId,
             },
             include: [
-                { model: Map, }, { model: Score, }, { model: Rating, }
+                {
+                    model: Map,
+                    attributes: ["id", "name", "creationDate"],
+                },
+                {
+                    model: Map, as: "MapScore",
+                    attributes: ["name"]
+                },
+                {
+                    model: Map, as: "MapRating",
+                    attributes: ["name"],
+                }
             ]
         }).then(user => {
             res.status(status.OK).send(user);
         }).catch(err => {
-            res.status(status.INTERNAL_SERVER_ERROR).send(err);
+            sendError(res, err, "Une erreur est survenue.");
         });
     }
     else {
         res.status(status.INTERNAL_SERVER_ERROR).send("Id utilisateur inconnu");
     }
+});
+app.get('/map/:mapId', (req, res) => {
+    const mapId = req.params.mapId;
+    if (mapId) {
+        Map.findOne({
+            attributes: ["id", "name", "mapContent", "nbRow", "nbCol", "creationDate"],
+            where: {
+                id: mapId,
+            },
+            include: [
+                {
+                    model: Asset,
+                    attributes: ["filepath"]
+                }
+            ]
+        }).then(map => {
+            res.status(status.OK).send(map);
+        }).catch(err => {
+            sendError(res, err, "Une erreur est survenue.");
+        });
+    }
+    else {
+        res.status(status.INTERNAL_SERVER_ERROR).send("Id map inconnu");
+    }
+});
+app.get('/map/all', (req, res) => {
+    Map.findAll({
+        attributes: ["id", "name", "creationDate"],
+        include: [
+            {
+                model: User,
+                attributes: ["id", "username"]
+            },
+        ]
+    }).then(maps => {
+        res.status(status.OK).send(maps);
+    }).catch(err => {
+        sendError(res, err, "Une erreur est survenue.");
+    });
 });
 // Create new map
 app.post('/map', (req, res) => {
@@ -97,9 +152,8 @@ app.post('/map', (req, res) => {
     const map = req.body.map;
     const today = new Date();
     if (userId && name && asset && map && asset.id && map.mapContent && map.nbRow && map.nbCol) {
-        req.body.name = req.body.name.trim();
         Map.create({
-            name: name,
+            name: name.trim(),
             mapContent: map.mapContent,
             nbRow: map.nbRow,
             nbCol: map.nbCol,
@@ -109,7 +163,65 @@ app.post('/map', (req, res) => {
         }).then(map => {
             res.status(status.OK).send(map);
         }).catch(err => {
-            sendError(res, err, "Une erreure est survenue lors de la création de la map.");
+            sendError(res, err, "Une erreur est survenue lors de la création de la map.");
+        });
+    }
+    else {
+        res.sendStatus(status.INTERNAL_SERVER_ERROR);
+    }
+});
+// Create a new asset
+app.post('/asset', (req, res) => {
+    const name = req.body.name;
+    const filepath = req.body.filepath;
+    if (name && filepath) {
+        Asset.create({
+            name: name.trim(),
+            filepath: filepath.trim(),
+        }).then(asset => {
+            res.status(status.OK).send(asset);
+        }).catch(err => {
+            sendError(res, err, "Une erreur est survenue lors de la création de l'asset.");
+        });
+    }
+    else {
+        res.sendStatus(status.INTERNAL_SERVER_ERROR);
+    }
+});
+// Insert a score
+app.post('/score', (req, res) => {
+    const score = req.body.score;
+    const mapId = req.body.mapId;
+    const userId = req.body.userId;
+    if (score && mapId && userId) {
+        Score.create({
+            score: score,
+            mapId: mapId,
+            userId: userId,
+        }).then(score => {
+            res.status(status.OK).send(score);
+        }).catch(err => {
+            sendError(res, err, "Une erreur est survenue lors de l'insertion du score.");
+        });
+    }
+    else {
+        res.sendStatus(status.INTERNAL_SERVER_ERROR);
+    }
+});
+// Insert a rating
+app.post('/rating', (req, res) => {
+    const like = req.body.like;
+    const mapId = req.body.mapId;
+    const userId = req.body.userId;
+    if (like !== undefined && mapId && userId) {
+        Rating.create({
+            like: like,
+            mapId: mapId,
+            userId: userId,
+        }).then(like => {
+            res.status(status.OK).send(like);
+        }).catch(err => {
+            sendError(res, err, "Une erreur est survenue lors de l'insertion de la note.");
         });
     }
     else {
