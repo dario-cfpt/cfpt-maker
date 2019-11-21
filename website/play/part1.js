@@ -1,3 +1,24 @@
+function callMap()
+{
+    var url_string = window.location.href;
+    var url = new URL(url_string);
+    var c = url.searchParams.get("id");
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:3000/map/" + c,
+        success: function (data) {
+            posX = data.spawnPosX;
+            posY = data.spawnPosY;
+            game = new Phaser.Game(config);
+        },
+        error: function (request) {
+            alert("Error " + request["status"] + ": " + request["statusText"]);
+        }
+    });
+}
+callMap();
+
+
 var config = {
     type: Phaser.AUTO,
     width: window.innerWidth,
@@ -21,8 +42,9 @@ var config = {
 const TIME = 500;
 const LIFE = 3;
 
-
-var game = new Phaser.Game(config);
+var posX;
+var posY;
+var game;
 var playerController;
 var cursors;
 var text;
@@ -37,7 +59,7 @@ var timerInterval = setInterval(function () {
     timer--;
     if (timer == 0)
     {
-       
+
         matterSprite.destroy();
         playerController.matterSprite = null;
         restart.call(game.scene.scenes[0]);
@@ -92,7 +114,7 @@ function preload()
         this.load.image('pic', 'end.png');
     } else
     {
-        this.load.tilemapTiledJSON('map', '../../config/test_layout.json'); //The map
+        this.load.tilemapTiledJSON('map', 'showmap.php?id=1'); //The map
         this.load.image('kenney_redux_64x64', '../../config/kenney_redux_64x64.png'); //The Asset
         this.load.spritesheet('player', '../../config/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
     }
@@ -186,7 +208,7 @@ function create()
     playerController.matterSprite
             .setExistingBody(compoundBody)
             .setFixedRotation() // Sets max inertia to prevent rotation
-            .setPosition(630, 1000);
+            .setPosition(posX, posY);
 
 
     cam = this.cameras.main;
@@ -456,7 +478,7 @@ function restart()
             cam.resetFX();
             this.scene.restart();
             life--;
-             clearInterval(timerInterval);
+            clearInterval(timerInterval);
             timer = TIME;
             timerInterval = setInterval(function () {
                 timer--;
