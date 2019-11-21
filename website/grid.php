@@ -11,9 +11,7 @@
     <link href="style.css" rel="stylesheet" type="text/css"/>
     <body>
         <?php include 'nav.php'; ?>
-
-        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: 60%;max-width: 100%;">
-        </div> 
+        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: 60%;max-width: 100%;"></div> 
         <div class="card d-block mx-auto" id="inventory" style="width: max-content; height: 40%;">
             <div class="card-header">
                 Inventory
@@ -38,17 +36,15 @@
                                     <option value="1">kenney_redux_64x64</option>
                                 </select>
                             </td>
-                        <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
-                        <input id="userId" name="userId" type="hidden" value="<?=$_SESSION["id"]?>">
-                        <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
-
+                            <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
+                            <input id="userId" name="userId" type="hidden" value="<?=$_SESSION["id"]?>">
+                            <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
                         </tr>
                     </table>
                 </form> 
                 <div class="d-inline-block">
                     <img  src="../config/Inventory.png" usemap="#panneaux"  alt=""/>
-                    <map name="panneaux" id="mapInventory">
-                    </map>
+                    <map name="panneaux" id="mapInventory"></map>
                 </div>
             </div>
         </div>
@@ -245,6 +241,7 @@
                         if($.inArray("char", mapData) !== -1){
                             console.log("oops");
                         }else{
+                            //:TODO
                             var posX = $(this).position().left,posY = $(this).position().top;
                             charPosX = (e.pageX - posX);
                             charPosY = (e.pageY - posY);
@@ -254,7 +251,7 @@
                         }
                     }else{
                         console.log(index);
-                        mapData[index] = currentBlockId;
+                        mapData[index] = parseInt(currentBlockId, 10);
                         drawGrid(mapData);
                     }
 
