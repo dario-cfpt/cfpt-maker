@@ -2,8 +2,7 @@ function serialize() {
     var myObject = new Object();
     myObject.username = $("input#username").val();
     myObject.password = $("input#password").val();
-    var myString = JSON.stringify(myObject);
-    return myString
+    return myObject
 }
 
 function sendPost(result) {
@@ -11,12 +10,11 @@ function sendPost(result) {
         type: "POST",
         url: 'http://127.0.0.1:3000/login',
         data: result,
-        success: function() {
-            alert("Status: " + success);
+        success: function(response) {
+            location.href = "session.php?id=" + response.id + "&username=" + response.username + ""
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             console.log("Status: " + textStatus);
-            console.log("Error: " + errorThrown);
         }
     });
 }

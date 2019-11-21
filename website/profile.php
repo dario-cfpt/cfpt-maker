@@ -10,7 +10,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous">
     </script>
-    <script src="js/mapList.js"></script>
+    <script src="js/profile.js"></script>
     <title>CFPT-Maker</title>
 </head>
 
@@ -18,11 +18,20 @@
     <?php
         include 'nav.php';
     ?>
-    <div style="margin: 20px;">
-        <div class="container">
-            <div class="row" id="maps">
+    <div class="row" style="padding: 44px">
+        <div class="col-lg-8">
+            <div id="madeBy">
+
             </div>
-          </div>
+            <div id="score">
+
+            </div>
+            <div id="played">
+
+            </div>
+        </div>
+        <div class="col">
+            <p id="userName"></p>
         </div>
     </div>
 </body>
