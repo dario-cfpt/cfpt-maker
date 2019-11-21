@@ -42,9 +42,9 @@ $_SESSION['userId'] = 1;
     <body style="height: 100%">
         <?php include 'nav.php'; ?>
 
-        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: 65%;max-width: 100%">
+        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: 60%;max-width: 100%">
         </div> 
-        <div class="card d-block mx-auto" id="inventory" style="width: max-content; height: 35%;">
+        <div class="card d-block mx-auto" id="inventory" style="width: max-content; height: 40%;">
             <div class="card-header">
                 Inventory
             </div>
@@ -66,7 +66,7 @@ $_SESSION['userId'] = 1;
                                 <option value="1">kenney_redux_64x64</option>
                             </select>
                         </td>
-
+                    <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
                     <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
 
                     </tr>
@@ -80,6 +80,7 @@ $_SESSION['userId'] = 1;
         </div>
         <script>
             var draw = false;
+
             var mapData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -98,12 +99,13 @@ $_SESSION['userId'] = 1;
                 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 166, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 13, 13, 49, 0, 0, 0, 0, 37, 13, 13, 0, 0, 2, 2, 0,
-                0, 2, 2, 189, 189, 2, 2, 121, 49, 0, 0, 37, 109, 2, 2, 189, 189, 2, 2, 0,
+                0, 2, 2, 189, 189, 2, 2, 121, 49, "char", 0, 37, 109, 2, 2, 189, 189, 2, 2, 0,
                 145, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 133];
 
 
             var inventoryItemId = [1, 13, 25, 37, 49, 61, 73, 85, 97, 109, 121, 133, 145, 157, 169, 181,
-                166, 167, 189, 143, 131, 71, 70, 12, 96, 95, 22, 34, 94, 72, 188, 11]
+                2, 14, 189, 167, 71, 70, 12, 96, 95, 22, 34, 94, 72, 188, 11, 0,
+                143, 131, "char", 166]
 
 
             topLeft = 0;
@@ -130,6 +132,14 @@ $_SESSION['userId'] = 1;
                     bottomRight = 64;
                     bottomleft = 64;
                 }
+                if (inventoryItemId.indexOf(item) == 31)
+                {
+                    topLeft = 0;
+                    topRight = 192;
+                    bottomRight = 64;
+                    bottomleft = 128;
+                }
+
             });
 
 
@@ -213,6 +223,11 @@ $_SESSION['userId'] = 1;
                 if (value == 0)
                 {
                     myDiv.style.backgroundColor = "#19AAE5";
+                } else if (value == "char")
+                {
+                    myDiv.style = 'background:url("../config/character.png")';
+                    myDiv.style.backgroundPosition = "bottom";
+                    myDiv.style.backgroundRepeat = "no-repeat";
                 } else
                 {
 
@@ -222,8 +237,12 @@ $_SESSION['userId'] = 1;
                 myDiv.style.width = "64px";
                 myDiv.style.height = "64px";
                 myDiv.style.display = "inline-block";
-                //       myDiv.style.border = "solid 1px black";
-                //    myDiv.style.boxSizing = "border-box";
+                if (grid.checked)
+                {
+                    myDiv.style.border = "solid 1px black";
+                    myDiv.style.boxSizing = "border-box";
+                }
+
                 myDiv.addEventListener("mousedown", function () {
                     draw = true;
 
@@ -232,7 +251,7 @@ $_SESSION['userId'] = 1;
                     draw = false;
 
                 });
-                myDiv.addEventListener("mouseenter", function () {
+                myDiv.addEventListener("mousemove", function () {
 
                     if (draw)
                     {
@@ -241,10 +260,43 @@ $_SESSION['userId'] = 1;
                         drawGrid(mapData);
                     }
                 });
+                myDiv.addEventListener("click", function () {
+
+                    console.log(index);
+                    mapData[index] = currentBlockId;
+                    drawGrid(mapData);
+
+                });
                 tr.append(myDiv);
             }
 
             drawGrid(mapData);
+
+            function saveMap()
+            {
+                console.log(mapData);
+                console.log();
+                console.log(mapData);
+                $.ajax({
+                    type: "POST",
+                    url: "mytest.json",
+                    success: function (data) {
+                        Gameplay = Game.fromJSON(JSON.stringify(data));
+                        Gameplay.initPrint();
+                        LocalPlayer = Gameplay.getPlayers().find(x => x.getName() == p["name_Player"]);
+                        Gameplay.setLocalPlayer(LocalPlayer);
+                        Gameplay.updateView(LocalPlayer);
+                        console.log(data);
+                        txt.innerHTML = Gameplay.getLastMessage();
+                        txtLocal.innerHTML = "Bienvenue " + LocalPlayer.getName();
+                    },
+                    error: function (request) {
+                        alert("Error " + request["status"] + ": " + request["statusText"]);
+                    }
+                });
+            }
+
+            map.scrollTop = 1000;
         </script>
     </body>
 </html>
