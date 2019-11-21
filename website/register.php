@@ -20,6 +20,7 @@
     ?>
     <div class="h-100 row align-items-center">
         <form name="register" class="col-4 mx-auto">
+            <div class="form-group row" id="info"></div>
             <div class="form-horizontal form-group row">
                 <label for="email" class="col-4 col-form-label">email</label>
                 <div class="col-8">
@@ -29,7 +30,10 @@
                                 <i class="fa fa-envelope-o"></i>
                             </div>
                         </div>
-                        <input id="mail" name="mail" placeholder="ex. Builder@gmail.com" type="text" class="form-control" required="required">
+                        <input id="mail" name="mail" placeholder="ex. Builder@gmail.com" type="text" class="form-control" required="required" oninput="checkEmail(this.value);">
+                        <div class="invalid-feedback">
+                            ex. Builder@gmail.com
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,10 +59,11 @@
                                 <i class="fa fa-unlock-alt"></i>
                             </div>
                         </div>
-                        <input id="password" name="password" type="password" class="form-control" required="required" aria-describedby="passwordHelpBlock" oninput="checkPassword(this.value);">
+                        <input id="password" name="password" type="password" class="form-control" required="required" oninput="CheckPassword(this.value);">
+                        <div class="invalid-feedback">
+                            minimum 7 char (one uppercase and a number)
+                        </div>
                     </div>
-                    <span id="passwordHelpBlock" class="form-text text-muted">minimum 7 char (one uppercase and a
-                    number)</span>
                 </div>
             </div>
             <div class="form-group row">

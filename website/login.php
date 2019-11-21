@@ -10,6 +10,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous">
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
     <script src="js/login.js"></script>
     <title>CFPT-Maker</title>
 </head>
@@ -20,6 +21,8 @@
     ?>
     <div class="h-100 row align-items-center">
         <form name="login" class="col-4 mx-auto">
+            <div class="form-group row" id="info">
+            </div>
             <div class="form-group row">
                 <label for="username" class="col-4 col-form-label">username</label>
                 <div class="col-8">
