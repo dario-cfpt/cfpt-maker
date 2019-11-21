@@ -2602,5 +2602,4 @@ $map->width = $response->nbCol;
 $map->layers[0]->width = $response->nbCol;
 $map->layers[0]->height = $response->nbRow;
 $map->layers[0]->data = json_decode($response->mapContent);
-
 echo json_encode($map);

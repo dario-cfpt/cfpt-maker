@@ -4,7 +4,7 @@ function serialize() {
     myObject.assetId = 1;
     myObject.nbCol = $("input#w").val();
     myObject.nbRow = $("input#h").val();
-    myObject.mapContent = "[" + mapData + "]";
+    myObject.mapContent = JSON.stringify(mapData);
     myObject.userId = $("input#userId").val();
     myObject.name = $("input#name").val();
     myObject.spawnPosX = charPosX;
@@ -30,6 +30,7 @@ function count(arr) {
         var num = arr[i];
         counts[num] = counts[num] ? counts[num] + 1 : 1;
     }
+    console.log(counts);
     if (counts[166] == 1 && counts[143] == 1 && counts[131] == 1 && counts["char"] == 1) {
         return true
     }
@@ -40,12 +41,15 @@ function sendMap(result) {
         type: "POST",
         url: 'http://127.0.0.1:3000/map',
         data: result,
-        success: function(response) {
+
+        success: function (response) {
             info("the map has been successfully saved, you will be redirected to play on this map", "success");
             var delay = 3000;
-            setTimeout(function() { window.location = "play/index.html?id=" + response.id; }, delay);
+            setTimeout(function () {
+                window.location = "play/index.html?id=" + response.id;
+            }, delay);
         },
-        error: function(textStatus) {
+        error: function (textStatus) {
             info("something went wrong, have you filled in all the fields ?", "danger");
         }
     });
@@ -59,15 +63,11 @@ function info(msg, type) {
     `);
 }
 
-$(function() {
-    $('form').submit(function(e) {
-        $('#message').remove();
-        if (checkMapContent()) {
 
-            sendMap(serialize());
-        } else {
-            info("you need 1 door, 1 switch and 1 player ! ", "danger");
-        }
-        e.preventDefault();
-    });
+btnSub.addEventListener("click", function () {
+    if (checkMapContent()) {
+        sendMap(serialize());
+    } else {
+        info("you need 1 door, 1 switch and 1 player ! ", "danger");
+    }
 });

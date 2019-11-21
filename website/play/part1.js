@@ -1,11 +1,12 @@
+var id;
 function callMap()
 {
     var url_string = window.location.href;
     var url = new URL(url_string);
-    var c = url.searchParams.get("id");
+     id = url.searchParams.get("id");
     $.ajax({
         type: "GET",
-        url: "http://localhost:3000/map/" + c,
+        url: "http://localhost:3000/map/" + id,
         success: function (data) {
             posX = data.spawnPosX;
             posY = data.spawnPosY;
@@ -114,7 +115,7 @@ function preload()
         this.load.image('pic', 'end.png');
     } else
     {
-        this.load.tilemapTiledJSON('map', 'showmap.php?id=1'); //The map
+        this.load.tilemapTiledJSON('map', 'showmap.php?id='+id); //The map
         this.load.image('kenney_redux_64x64', '../../config/kenney_redux_64x64.png'); //The Asset
         this.load.spritesheet('player', '../../config/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
     }

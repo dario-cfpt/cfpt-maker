@@ -7,7 +7,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <script src="js/grid.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css"/>
     <body>
         <?php include 'nav.php'; ?>
@@ -36,9 +35,16 @@
                                     <option value="1">kenney_redux_64x64</option>
                                 </select>
                             </td>
+<<<<<<< HEAD
                             <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
                             <input id="userId" name="userId" type="hidden" value="<?=$_SESSION["id"]?>">
                             <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
+=======
+                        <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
+                        <input id="userId" name="userId" type="hidden" value="<?= $_SESSION["id"] ?>">
+                        <button id="btnSub" class="contact-form  btn btn-primary float-right" name="submit" type="button">Enregistrer la map</button>
+
+>>>>>>> 7a9399de27e41fe0a01019ab0c5f68336dcd64ed
                         </tr>
                     </table>
                 </form> 
@@ -231,39 +237,64 @@
                             console.log(index);
                             mapData[index] = currentBlockId;
                             drawGrid(mapData);
-                        
+
                         }
                     }
                 });
                 myDiv.addEventListener("click", function (e) {
-                    
+
                     if (currentBlockId == "char") {
-                        if($.inArray("char", mapData) !== -1){
+                        if ($.inArray("char", mapData) !== -1) {
                             console.log("oops");
-                        }else{
-                            //:TODO
-                            var posX = $(this).position().left,posY = $(this).position().top;
+                        } else {
+                            var posX = $(this).position().left, posY = $(this).position().top;
                             charPosX = (e.pageX - posX);
                             charPosY = (e.pageY - posY);
                             console.log(index);
                             mapData[index] = currentBlockId;
                             drawGrid(mapData);
                         }
-                    }else{
+                    } else {
                         console.log(index);
+<<<<<<< HEAD
                         mapData[index] = parseInt(currentBlockId, 10);
+=======
+                        if (currentBlockId == "char")
+                        {
+                            mapData[index] = currentBlockId;
+                        } else
+                        {
+                            mapData[index] = parseInt(currentBlockId);
+                        }
+
+>>>>>>> 7a9399de27e41fe0a01019ab0c5f68336dcd64ed
                         drawGrid(mapData);
                     }
 
                 });
+                myDiv.addEventListener("click", function () {
+
+                    console.log(index);
+                    if (currentBlockId == "char")
+                    {
+                        mapData[index] = currentBlockId;
+                    } else
+                    {
+                        mapData[index] = parseInt(currentBlockId);
+                    }
+                    drawGrid(mapData);
+
+                });
+                
                 tr.append(myDiv);
             }
 
             drawGrid(mapData);
 
-          
+
 
             map.scrollTop = 1000;
         </script>
+        <script src="js/grid.js"></script>
     </body>
 </html>
