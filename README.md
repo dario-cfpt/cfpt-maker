@@ -18,7 +18,7 @@ automatically created when you will run the project.
 
 ```bash
 $ git clone https://github.com/dario-cfpt/cfpt-maker.git
-$ cd cfpt-maker
+$ cd cfpt-maker/server
 ```
 
 ## Install the dependencies
