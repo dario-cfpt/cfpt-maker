@@ -37,7 +37,7 @@
                             </td>
                             <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
                             <input id="userId" name="userId" type="hidden" value="<?=$_SESSION["id"]?>">
-                            <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
+                            <button id="btnSub" class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
                         </tr>
                     </table>
                 </form> 

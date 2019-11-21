@@ -41,15 +41,14 @@ function sendMap(result) {
         type: "POST",
         url: 'http://127.0.0.1:3000/map',
         data: result,
-
-        success: function (response) {
+        success: function(response) {
             info("the map has been successfully saved, you will be redirected to play on this map", "success");
             var delay = 3000;
-            setTimeout(function () {
+            setTimeout(function() {
                 window.location = "play/index.html?id=" + response.id;
             }, delay);
         },
-        error: function (textStatus) {
+        error: function(textStatus) {
             info("something went wrong, have you filled in all the fields ?", "danger");
         }
     });
@@ -64,10 +63,11 @@ function info(msg, type) {
 }
 
 
-btnSub.addEventListener("click", function () {
+btnSub.addEventListener("click", function(e) {
     if (checkMapContent()) {
         sendMap(serialize());
     } else {
         info("you need 1 door, 1 switch and 1 player ! ", "danger");
     }
+    e.preventDefault();
 });
