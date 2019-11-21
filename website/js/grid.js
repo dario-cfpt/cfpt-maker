@@ -4,7 +4,7 @@ function serialize() {
     myObject.assetId = 1;
     myObject.nbCol = $("input#w").val();
     myObject.nbRow = $("input#h").val();
-    myObject.mapContent = "[" + mapData + "]";
+    myObject.mapContent = JSON.stringify(mapData);
     myObject.userId = $("input#userId").val();
     myObject.name = $("input#name").val();
     myObject.spawnPosX = "245";
@@ -13,8 +13,8 @@ function serialize() {
 }
 
 function checkMapContent() {
-    if(mapData.includes(166) && mapData.includes(143) && mapData.includes(131) && mapData.includes("char")){
-        if(count(mapData)){
+    if (mapData.includes(166) && mapData.includes(143) && mapData.includes(131) && mapData.includes("char")) {
+        if (count(mapData)) {
             return true
         }
     }
@@ -26,31 +26,36 @@ function count(arr) {
         var num = arr[i];
         counts[num] = counts[num] ? counts[num] + 1 : 1;
     }
+    console.log(counts);
     if (counts[166] == 1 && counts[143] == 1 && counts[131] == 1 && counts["char"] == 1) {
         return true
-    }  
+    }
+    
 }
 
-function sendMap(result){
+function sendMap(result) {
     $.ajax({
         type: "POST",
         url: 'http://127.0.0.1:3000/map',
         data: result,
-        success: function(response) {
+        success: function (response) {
             console.log(response);
         },
-        error: function(textStatus) {
+        error: function (textStatus) {
             console.log("Status: " + textStatus);
         }
     });
 }
 
 
-$(function() {
-    $('form').submit(function(e) {
-        if(checkMapContent()){ 
+
+
+btnSub.addEventListener("click", function () {
+  if (checkMapContent()) {
             sendMap(serialize());
         }
-        e.preventDefault();
-    });
+        else
+        {
+            console.log("error");
+        }
 });

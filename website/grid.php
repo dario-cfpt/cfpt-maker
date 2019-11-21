@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
 <?php
 //for test
 $_SESSION['userId'] = 1;
@@ -12,7 +11,6 @@ $_SESSION['userId'] = 1;
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
-    <script src="js/grid.js"></script>
     <link href="style.css" rel="stylesheet" type="text/css"/>
     <body>
         <?php include 'nav.php'; ?>
@@ -43,8 +41,8 @@ $_SESSION['userId'] = 1;
                                 </select>
                             </td>
                         <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
-                        <input id="userId" name="userId" type="hidden" value="<?=$_SESSION["id"]?>">
-                        <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
+                        <input id="userId" name="userId" type="hidden" value="<?= $_SESSION["id"] ?>">
+                        <button id="btnSub" class="contact-form  btn btn-primary float-right" name="submit" type="button">Enregistrer la map</button>
 
                         </tr>
                     </table>
@@ -234,14 +232,27 @@ $_SESSION['userId'] = 1;
                     if (draw)
                     {
                         console.log(index);
-                        mapData[index] = currentBlockId;
+                        if (currentBlockId == "char")
+                        {
+                            mapData[index] = currentBlockId;
+                        } else
+                        {
+                            mapData[index] = parseInt(currentBlockId);
+                        }
+
                         drawGrid(mapData);
                     }
                 });
                 myDiv.addEventListener("click", function () {
 
                     console.log(index);
-                    mapData[index] = currentBlockId;
+                    if (currentBlockId == "char")
+                    {
+                        mapData[index] = currentBlockId;
+                    } else
+                    {
+                        mapData[index] = parseInt(currentBlockId);
+                    }
                     drawGrid(mapData);
 
                 });
@@ -250,9 +261,10 @@ $_SESSION['userId'] = 1;
 
             drawGrid(mapData);
 
-          
+
 
             map.scrollTop = 1000;
         </script>
+        <script src="js/grid.js"></script>
     </body>
 </html>
