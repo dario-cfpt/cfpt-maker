@@ -1,6 +1,7 @@
 import *  as express from 'express';
 import {Op} from 'sequelize';
 import bodyParser = require("body-parser");
+const CryptoJS = require("crypto-js");
 
 const {Asset, Map, User, Score, Rating} = require('./db');
 
@@ -11,6 +12,8 @@ app.use(bodyParser.json());
 
 const hostname = '127.0.0.1';
 const port = 3000;
+
+const secretKey = "RED LUIGI";
 
 function sendError(res, err, msg) {
     console.log(err);
@@ -33,11 +36,12 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     let email = req.body.email;
     let username = req.body.username;
-    const password = req.body.password;
+    let password = req.body.password;
 
     if ((email || username) && password) {
         email = (email !== undefined) ? email.trim() : null;
         username = (username !== undefined) ? username.trim() : null;
+        password = CryptoJS.SHA256(password, secretKey).toString();
 
         User.findOne({
             attributes: ["id", "username", "email"],
@@ -79,6 +83,7 @@ app.post('/user', (req, res) => {
     if (email && username && password) {
         req.body.email = email.trim();
         req.body.username = username.trim();
+        req.body.password = CryptoJS.SHA256(req.body.password, secretKey).toString();
 
         User.create(req.body)
             .then(user => {
