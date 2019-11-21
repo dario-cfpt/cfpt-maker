@@ -29,6 +29,14 @@ Map.init({
     creationDate: {
         type: Sequelize_1.DataTypes.DATE,
         allowNull: false,
+    },
+    spawnPosX: {
+        type: Sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
+    },
+    spawnPosY: {
+        type: Sequelize_1.DataTypes.INTEGER,
+        allowNull: false,
     }
 }, {
     timestamps: false,

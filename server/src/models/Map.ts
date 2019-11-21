@@ -7,6 +7,8 @@ class Map extends Model {
     public nbRow!: number;
     public nbCol!: number;
     public creationDate!: Date;
+    public spawnPosX!: number;
+    public spawnPosY!: number;
 }
 
 Map.init({
@@ -33,6 +35,14 @@ Map.init({
     },
     creationDate: {
         type: DataTypes.DATE,
+        allowNull: false,
+    },
+    spawnPosX: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    spawnPosY: {
+        type: DataTypes.INTEGER,
         allowNull: false,
     }
 }, {

@@ -119,20 +119,26 @@ app.get('/user/:userId', (req, res) => {
 });
 // Create new map
 app.post('/map', (req, res) => {
-    const userId = req.body.user.id;
     const name = req.body.name;
-    const asset = req.body.asset;
-    const map = req.body.map;
+    const mapContent = req.body.mapContent;
+    const spawnPosX = req.body.spawnPosX;
+    const spawnPosY = req.body.spawnPosY;
+    const nbRow = req.body.nbRow;
+    const nbCol = req.body.nbCol;
+    const userId = req.body.userId;
+    const assetId = req.body.assetId;
     const today = new Date();
-    if (userId && name && asset && map && asset.id && map.mapContent && map.nbRow && map.nbCol) {
+    if (name && mapContent && spawnPosX && spawnPosY && nbRow && nbCol && userId && assetId) {
         Map.create({
             name: name.trim(),
-            mapContent: map.mapContent,
-            nbRow: map.nbRow,
-            nbCol: map.nbCol,
+            mapContent: mapContent,
+            nbRow: nbRow,
+            nbCol: nbCol,
             creationDate: today,
+            spawnPosX: spawnPosX,
+            spawnPosY: spawnPosY,
             userId: userId,
-            assetId: asset.id,
+            assetId: assetId,
         }).then(map => {
             res.status(status.OK).send(map);
         }).catch(err => {
@@ -140,18 +146,21 @@ app.post('/map', (req, res) => {
         });
     }
     else {
-        res.sendStatus(status.INTERNAL_SERVER_ERROR);
+        res.status(status.INTERNAL_SERVER_ERROR).send("Missing or incorrect fields.");
     }
 });
 app.get('/map/all', (req, res) => {
     Map.findAll({
         attributes: ["id", "name", "creationDate"],
+        order: [
+            ["creationDate", "DESC"],
+        ],
         include: [
             {
                 model: User,
                 attributes: ["id", "username"]
             },
-        ]
+        ],
     }).then(maps => {
         res.status(status.OK).send(maps);
     }).catch(err => {
@@ -162,7 +171,7 @@ app.get('/map/:mapId', (req, res) => {
     const mapId = req.params.mapId;
     if (mapId) {
         Map.findOne({
-            attributes: ["id", "name", "mapContent", "nbRow", "nbCol", "creationDate"],
+            attributes: ["id", "name", "mapContent", "nbRow", "nbCol", "creationDate", "spawnPosX", "spawnPosY"],
             where: {
                 id: mapId,
             },

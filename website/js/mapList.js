@@ -13,7 +13,7 @@ function getMaps() {
 
 function showMaps(response) {
     response.forEach(element => {
-        $('#madeBy').append(`
+        $('#maps').append(`
             <div class="col-md-3">
                 <div class="card">
                     <a href="play/load.php?id=` + element.id + `">
