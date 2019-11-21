@@ -126,47 +126,6 @@ app.get('/user/:userId', (req, res) => {
     }
 });
 
-app.get('/map/:mapId', (req, res) => {
-    const mapId = req.params.mapId;
-
-    if (mapId) {
-        Map.findOne({
-            attributes: ["id", "name", "mapContent", "nbRow", "nbCol", "creationDate"],
-            where: {
-                id: mapId,
-            },
-            include: [
-                {
-                    model: Asset,
-                    attributes: ["filepath"]
-                }
-            ]
-        }).then(map => {
-            res.status(status.OK).send(map);
-        }).catch(err => {
-            sendError(res, err, "Une erreur est survenue.");
-        });
-    } else {
-        res.status(status.INTERNAL_SERVER_ERROR).send("Id map inconnu");
-    }
-});
-
-app.get('/map/all', (req, res) => {
-    Map.findAll({
-        attributes: ["id", "name", "creationDate"],
-        include: [
-            {
-                model: User,
-                attributes: ["id", "username"]
-            },
-        ]
-    }).then(maps => {
-        res.status(status.OK).send(maps);
-    }).catch(err => {
-        sendError(res, err, "Une erreur est survenue.");
-    });
-});
-
 // Create new map
 app.post('/map', (req, res) => {
     const userId = req.body.user.id;
@@ -191,6 +150,47 @@ app.post('/map', (req, res) => {
         });
     } else {
         res.sendStatus(status.INTERNAL_SERVER_ERROR);
+    }
+});
+
+app.get('/map/all', (req, res) => {
+    Map.findAll({
+        attributes: ["id", "name", "creationDate"],
+        include: [
+            {
+                model: User,
+                attributes: ["id", "username"]
+            },
+        ]
+    }).then(maps => {
+        res.status(status.OK).send(maps);
+    }).catch(err => {
+        sendError(res, err, "Une erreur est survenue.");
+    });
+});
+
+app.get('/map/:mapId', (req, res) => {
+    const mapId = req.params.mapId;
+
+    if (mapId) {
+        Map.findOne({
+            attributes: ["id", "name", "mapContent", "nbRow", "nbCol", "creationDate"],
+            where: {
+                id: mapId,
+            },
+            include: [
+                {
+                    model: Asset,
+                    attributes: ["filepath"]
+                },
+            ]
+        }).then(map => {
+            res.status(status.OK).send(map);
+        }).catch(err => {
+            sendError(res, err, "Une erreur est survenue.");
+        });
+    } else {
+        res.status(status.INTERNAL_SERVER_ERROR).send("Id map inconnu");
     }
 });
 
