@@ -26,7 +26,7 @@ function showMaps(maps) {
                     <div class="card-body">
                         <h4 class="card-title">` + element.name + `</h4>
                         </a>
-                        <p class="card-text"><a href="profile.php?id=` + maps.id + `">` + maps.username + `</a> | ` + element.creationDate + `</p>
+                        <p class="card-text"><a href="profile.php?id=` + maps.id + `">` + maps.username + `</a> | ` + element.creationDate.substr(0, 10) + `</p>
                     </div>
                 </div>
             </div>

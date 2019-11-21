@@ -247,7 +247,8 @@
                             var posX = $(this).position().left, posY = $(this).position().top;
                             charPosX = (e.pageX - posX);
                             charPosY = (e.pageY - posY);
-                            console.log(index);
+                            console.log(charPosX);
+                            console.log(charPosY);
                             mapData[index] = currentBlockId;
                             drawGrid(mapData);
                         }
