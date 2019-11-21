@@ -2,7 +2,7 @@ function serialize() {
     var myObject = new Object();
     myObject.username = $("input#username").val();
     myObject.password = $("input#password").val();
-    return myString
+    return myObject
 }
 
 function sendPost(result) {

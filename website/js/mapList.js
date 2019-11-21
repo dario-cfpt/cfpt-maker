@@ -3,7 +3,6 @@ function getMaps() {
         type: "GET",
         url: 'http://127.0.0.1:3000/map/all',
         success: function(response) {
-            console.log("Status: " + textStatus);
             showMaps(response);
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -32,5 +31,4 @@ function showMaps(response) {
 
 $(function() {
     getMaps();
-    e.preventDefault();
 });
