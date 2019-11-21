@@ -11,8 +11,15 @@ You will also need a MySQL database with a specific user. See the next section t
 
 ## Configure the database
 
-You just need to run the `create_db_cfpt_maker.sql` script to create the database and the user. The tables will be
-automatically created when you will run the project.
+First run the `create_db_cfpt_maker.sql` script to create the database. 
+
+Next create an user :
+- Name : GreenMario
+- Host name : localhost
+- Password : SuperMaker19
+- Global privileges : All for Data, All for Structure and REFERENCES for Administration
+
+For the tables they will be automatically created when you will run the project.
 
 ## Install the project
 
