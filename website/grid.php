@@ -7,9 +7,11 @@ $_SESSION['userId'] = 1;
     <head>
         <title>Editeur</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
+    <script src="js/grid.js"></script>
     <style>
         #map::-webkit-scrollbar-track
         {
@@ -49,28 +51,30 @@ $_SESSION['userId'] = 1;
                 Inventory
             </div>
             <div class="card-body">
-                <table>
-                    <tr>
-                        <td><h2>Width</h2></td>
-                        <td><h2>Height</h2></td>
-                        <td><h2>Nom</h2></td>
-                        <td><h2>Texture</h2></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><input id="w" onchange="changeSizeW(this.value)"  type="number" value="20"/></td>
-                        <td><input id="h" onchange="changeSizeH(this.value)"  type="number" value="20"/></td>
-                        <td><input id="name" class="" /></td>
-                        <td>
-                            <select name="assets" id="asset-select" disabled> 
-                                <option value="1">kenney_redux_64x64</option>
-                            </select>
-                        </td>
+                <form>
+                    <table>
+                        <tr>
+                            <td><h2>Width</h2></td>
+                            <td><h2>Height</h2></td>
+                            <td><h2>Nom</h2></td>
+                            <td><h2>Texture</h2></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><input id="w" onchange="changeSizeW(this.value)"  type="number" value="20"/></td>
+                            <td><input id="h" onchange="changeSizeH(this.value)"  type="number" value="20"/></td>
+                            <td><input id="name" class="" /></td>
+                            <td>
+                                <select name="assets" id="asset-select" disabled> 
+                                    <option value="1">kenney_redux_64x64</option>
+                                </select>
+                            </td>
 
-                    <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
+                        <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
 
-                    </tr>
-                </table>
+                        </tr>
+                    </table>
+                </form>
                 <div class="d-inline-block">
                     <img  src="../config/Inventory.png" usemap="#panneaux"  alt=""/>
                     <map name="panneaux" id="mapInventory">
@@ -96,7 +100,7 @@ $_SESSION['userId'] = 1;
                 0, 2, 2, 0, 0, 0, 0, 85, 73, 73, 73, 73, 61, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-                0, 2, 2, 0, 0, 166, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 166, 0, 0, 0, "char", 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 13, 13, 49, 0, 0, 0, 0, 37, 13, 13, 0, 0, 2, 2, 0,
                 0, 2, 2, 189, 189, 2, 2, 121, 49, 0, 0, 37, 109, 2, 2, 189, 189, 2, 2, 0,
                 145, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 133];
