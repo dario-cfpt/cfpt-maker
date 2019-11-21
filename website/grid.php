@@ -1,9 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<?php
-//for test
-$_SESSION['userId'] = 1;
-?>
 <html>
     <head>
         <title>Editeur</title>
@@ -24,6 +19,7 @@ $_SESSION['userId'] = 1;
                 Inventory
             </div>
             <div class="card-body">
+                <div id="info"></div>
                 <form>
                     <table>
                         <tr>
