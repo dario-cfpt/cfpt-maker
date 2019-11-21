@@ -49,8 +49,8 @@
         </div>
         <script>
             var draw = false;
-            var charPosX = 27;
-            var charPosY = -620;
+            var charPosX = 576;
+            var charPosY = 1152;
 
             var mapData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
