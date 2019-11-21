@@ -35,16 +35,9 @@
                                     <option value="1">kenney_redux_64x64</option>
                                 </select>
                             </td>
-<<<<<<< HEAD
                             <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
                             <input id="userId" name="userId" type="hidden" value="<?=$_SESSION["id"]?>">
                             <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
-=======
-                        <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
-                        <input id="userId" name="userId" type="hidden" value="<?= $_SESSION["id"] ?>">
-                        <button id="btnSub" class="contact-form  btn btn-primary float-right" name="submit" type="button">Enregistrer la map</button>
-
->>>>>>> 7a9399de27e41fe0a01019ab0c5f68336dcd64ed
                         </tr>
                     </table>
                 </form> 
@@ -256,18 +249,7 @@
                         }
                     } else {
                         console.log(index);
-<<<<<<< HEAD
                         mapData[index] = parseInt(currentBlockId, 10);
-=======
-                        if (currentBlockId == "char")
-                        {
-                            mapData[index] = currentBlockId;
-                        } else
-                        {
-                            mapData[index] = parseInt(currentBlockId);
-                        }
-
->>>>>>> 7a9399de27e41fe0a01019ab0c5f68336dcd64ed
                         drawGrid(mapData);
                     }
 
