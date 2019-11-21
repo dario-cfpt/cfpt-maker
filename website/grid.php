@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<?php
-//for test
-$_SESSION['userId'] = 1;
-?>
 <html style="height: 100%;">
     <head>
         <title>Editeur</title>
@@ -70,6 +66,7 @@ $_SESSION['userId'] = 1;
                                 </select>
                             </td>
                         <input onchange="drawGrid(mapData)" id="grid" type="checkbox"/><label for="grid" >Afficher la grille</label>
+                        <input id="userId" name="userId" type="hidden" value="<?=$_SESSION["id"]?>">
                         <button class="contact-form  btn btn-primary float-right" name="submit" type="submit">Enregistrer la map</button>
 
                         </tr>
@@ -101,7 +98,7 @@ $_SESSION['userId'] = 1;
                 0, 2, 2, 0, 0, 0, 0, 85, 73, 73, 73, 73, 61, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-                0, 2, 2, 0, 0, 166, 0, 0, 0, "char", 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 166, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 13, 13, 49, 0, 0, 0, 0, 37, 13, 13, 0, 0, 2, 2, 0,
                 0, 2, 2, 189, 189, 2, 2, 121, 49, "char", 0, 37, 109, 2, 2, 189, 189, 2, 2, 0,
                 145, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 133];
