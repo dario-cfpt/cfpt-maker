@@ -54,6 +54,8 @@
         </div>
         <script>
             var draw = false;
+            var charPosX = 27;
+            var charPosY = -620;
 
             var mapData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -229,16 +231,32 @@
 
                     if (draw)
                     {
+                        if (currentBlockId != "char") {
+                            console.log(index);
+                            mapData[index] = currentBlockId;
+                            drawGrid(mapData);
+                        
+                        }
+                    }
+                });
+                myDiv.addEventListener("click", function (e) {
+                    
+                    if (currentBlockId == "char") {
+                        if($.inArray("char", mapData) !== -1){
+                            console.log("oops");
+                        }else{
+                            var posX = $(this).position().left,posY = $(this).position().top;
+                            charPosX = (e.pageX - posX);
+                            charPosY = (e.pageY - posY);
+                            console.log(index);
+                            mapData[index] = currentBlockId;
+                            drawGrid(mapData);
+                        }
+                    }else{
                         console.log(index);
                         mapData[index] = currentBlockId;
                         drawGrid(mapData);
                     }
-                });
-                myDiv.addEventListener("click", function () {
-
-                    console.log(index);
-                    mapData[index] = currentBlockId;
-                    drawGrid(mapData);
 
                 });
                 tr.append(myDiv);

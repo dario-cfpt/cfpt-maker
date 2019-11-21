@@ -7,9 +7,13 @@ function serialize() {
     myObject.mapContent = "[" + mapData + "]";
     myObject.userId = $("input#userId").val();
     myObject.name = $("input#name").val();
-    myObject.spawnPosX = "245";
-    myObject.spawnPosY = "25";
+    myObject.spawnPosX = charPosX;
+    myObject.spawnPosY = charPosY;
     return myObject
+}
+
+function getPlayerPosition() {
+    mapData
 }
 
 function checkMapContent() {
@@ -39,7 +43,7 @@ function sendMap(result) {
         success: function(response) {
             info("the map has been successfully saved, you will be redirected to play on this map", "success");
             var delay = 3000;
-            setTimeout(function() { window.location = "play/game.php"; }, delay);
+            setTimeout(function() { window.location = "play/index.html?id=" + response.id; }, delay);
         },
         error: function(textStatus) {
             info("something went wrong, have you filled in all the fields ?", "danger");
