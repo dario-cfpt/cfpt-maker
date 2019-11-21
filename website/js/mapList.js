@@ -16,12 +16,12 @@ function showMaps(response) {
         $('#maps').append(`
             <div class="col-md-3">
                 <div class="card">
-                    <a href="play/load.php?id=` + element.id + `">
-                    <img class="card-img-top w-100 d-block" style="height: 100px;">
+                    <a href="play/?id=` + element.id + `">
+                    <img src="img/logo.png" class="card-img-top w-100 d-block" style="">
                     <div class="card-body">
                         <h4 class="card-title">` + element.name + `</h4>
                         </a>
-                        <p class="card-text"><a href="profile.php?id=` + element.User.id + `">` + element.User.username + `</a> | ` + element.creationDate + `</p>
+                        <p class="card-text"><a href="profile.php?id=` + element.User.id + `">` + element.User.username + `</a> | ` + element.creationDate.substr(0,10) + `</p>
                     </div>
                 </div>
             </div>

@@ -3,7 +3,7 @@
 //for test
 $_SESSION['userId'] = 1;
 ?>
-<html style="height: 100%;">
+<html>
     <head>
         <title>Editeur</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -12,39 +12,11 @@ $_SESSION['userId'] = 1;
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <script src="js/grid.js"></script>
-    <style>
-        #map::-webkit-scrollbar-track
-        {
-            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-            border-radius: 10px;
-            background-color: #F5F5F5;
-        }
-
-        #map::-webkit-scrollbar
-        {
-            width: 12px;
-            background-color: #F5F5F5;
-        }
-
-        #map::-webkit-scrollbar-thumb
-        {
-            border-radius: 10px;
-            background-color: #F90;	
-            background-image: -webkit-linear-gradient(45deg,
-                rgba(255, 255, 255, .2) 25%,
-                transparent 25%,
-                transparent 50%,
-                rgba(255, 255, 255, .2) 50%,
-                rgba(255, 255, 255, .2) 75%,
-                transparent 75%,
-                transparent)
-        }
-        
-    </style>
-    <body style="height: 100% ;" >
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <body>
         <?php include 'nav.php'; ?>
 
-        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: calc(60% - 56px);max-width: 100%;">
+        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: 60%;max-width: 100%;">
         </div> 
         <div class="card d-block mx-auto" id="inventory" style="width: max-content; height: 40%;">
             <div class="card-header">
@@ -101,7 +73,7 @@ $_SESSION['userId'] = 1;
                 0, 2, 2, 0, 0, 0, 0, 85, 73, 73, 73, 73, 61, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
-                0, 2, 2, 0, 0, 166, 0, 0, 0, "char", 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
+                0, 2, 2, 0, 0, 166, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0,
                 0, 2, 2, 0, 0, 13, 13, 49, 0, 0, 0, 0, 37, 13, 13, 0, 0, 2, 2, 0,
                 0, 2, 2, 189, 189, 2, 2, 121, 49, "char", 0, 37, 109, 2, 2, 189, 189, 2, 2, 0,
                 145, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 133];
