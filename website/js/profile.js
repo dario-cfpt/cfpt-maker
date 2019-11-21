@@ -21,8 +21,8 @@ function showMaps(maps) {
         $('#madeBy').append(`
             <div class="col-md-3">
                 <div class="card">
-                    <a href="play/load.php?id=` + element.id + `">
-                    <img class="card-img-top w-100 d-block" style="height: 100px;">
+                    <a href="play/index.html?id=` + element.id + `">
+                    <img src="img/logo.png" class="card-img-top w-100 d-block">
                     <div class="card-body">
                         <h4 class="card-title">` + element.name + `</h4>
                         </a>
@@ -37,7 +37,7 @@ function showMaps(maps) {
         $('#score').append(`
             <div class="row">
                 <div class="col">
-                    <a href="play/load.php?id=` + element.Score.mapId + `">mapName: ` + element.name + `</a>
+                    <a href="play/index.html?id=` + element.Score.mapId + `">mapName: ` + element.name + `</a>
                 </div>
                 <div class="col">
                     <p>Score: ` + element.Score.score + `</p>
@@ -49,8 +49,8 @@ function showMaps(maps) {
         $('#rating').append(`
             <div class="col-md-3">
                 <div class="card">
-                    <a href="play/load.php?id=` + $element.map.id + `">
-                    <img class="card-img-top w-100 d-block" style="height: 100px;">
+                    <a href="play/index.html?id=` + $element.map.id + `">
+                    <img src="img/logo.png" class="card-img-top w-100 d-block">
                     <div class="card-body">
                         <h4 class="card-title">` + $element.map.name + `</h4>
                         </a>

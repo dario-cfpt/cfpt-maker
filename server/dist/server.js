@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express = require("express");
 const sequelize_1 = require("sequelize");
 const bodyParser = require("body-parser");
+const CryptoJS = require("crypto-js");
 const { Asset, Map, User, Score, Rating } = require('./db');
 const app = express();
 const status = require('http-status');
@@ -10,6 +11,7 @@ app.use(bodyParser.urlencoded({ extended: false })); // required for ajax POST d
 app.use(bodyParser.json());
 const hostname = '127.0.0.1';
 const port = 3000;
+const secretKey = "RED LUIGI";
 function sendError(res, err, msg) {
     console.log(err);
     res.status(status.INTERNAL_SERVER_ERROR).send(msg);
@@ -28,10 +30,11 @@ app.get('/', (req, res) => {
 app.post('/login', (req, res) => {
     let email = req.body.email;
     let username = req.body.username;
-    const password = req.body.password;
+    let password = req.body.password;
     if ((email || username) && password) {
         email = (email !== undefined) ? email.trim() : null;
         username = (username !== undefined) ? username.trim() : null;
+        password = CryptoJS.SHA256(password, secretKey).toString();
         User.findOne({
             attributes: ["id", "username", "email"],
             where: {
@@ -44,7 +47,7 @@ app.post('/login', (req, res) => {
                     },
                     {
                         username: {
-                            [sequelize_1.Op.like]: username
+                            [sequelize_1.Op.like]: username,
                         }
                     }
                 ],
@@ -57,7 +60,7 @@ app.post('/login', (req, res) => {
                 res.status(status.INTERNAL_SERVER_ERROR).send("Email/Username and/or password incorrect");
             }
         }).catch(err => {
-            res.status(status.INTERNAL_SERVER_ERROR).send(err);
+            sendError(res, err, "Une erreure est survenue lors de la tentative de connexions.");
         });
     }
     else {
@@ -72,6 +75,7 @@ app.post('/user', (req, res) => {
     if (email && username && password) {
         req.body.email = email.trim();
         req.body.username = username.trim();
+        req.body.password = CryptoJS.SHA256(req.body.password, secretKey).toString();
         User.create(req.body)
             .then(user => {
             res.status(status.OK).send(user);

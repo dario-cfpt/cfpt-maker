@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<?php
-//for test
-$_SESSION['userId'] = 1;
-?>
 <html>
     <head>
         <title>Editeur</title>
@@ -22,6 +18,7 @@ $_SESSION['userId'] = 1;
                 Inventory
             </div>
             <div class="card-body">
+                <div id="info"></div>
                 <form>
                     <table>
                         <tr>
@@ -56,6 +53,8 @@ $_SESSION['userId'] = 1;
         </div>
         <script>
             var draw = false;
+            var charPosX = 27;
+            var charPosY = -620;
 
             var mapData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -231,6 +230,28 @@ $_SESSION['userId'] = 1;
 
                     if (draw)
                     {
+                        if (currentBlockId != "char") {
+                            console.log(index);
+                            mapData[index] = currentBlockId;
+                            drawGrid(mapData);
+
+                        }
+                    }
+                });
+                myDiv.addEventListener("click", function (e) {
+
+                    if (currentBlockId == "char") {
+                        if ($.inArray("char", mapData) !== -1) {
+                            console.log("oops");
+                        } else {
+                            var posX = $(this).position().left, posY = $(this).position().top;
+                            charPosX = (e.pageX - posX);
+                            charPosY = (e.pageY - posY);
+                            console.log(index);
+                            mapData[index] = currentBlockId;
+                            drawGrid(mapData);
+                        }
+                    } else {
                         console.log(index);
                         if (currentBlockId == "char")
                         {
@@ -242,6 +263,7 @@ $_SESSION['userId'] = 1;
 
                         drawGrid(mapData);
                     }
+
                 });
                 myDiv.addEventListener("click", function () {
 
@@ -256,6 +278,7 @@ $_SESSION['userId'] = 1;
                     drawGrid(mapData);
 
                 });
+                
                 tr.append(myDiv);
             }
 

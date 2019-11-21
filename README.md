@@ -64,18 +64,14 @@ POST /map
 Require an object of the following structure :
 ```json
 {
-	"name": "Name of the map",
-	"user": {
-		"id": 1
-	},
-	"map": {
-		"mapContent": "",
-		"nbRow": 20,
-		"nbCol": 20
-	},
-	"asset": {
-		"id": 1
-	}
+    "name": "Name of the map",
+    "mapContent": "",
+    "nbRow": 20,
+    "nbCol": 20,
+    "spawnPosX": 1,
+    "spawnPosY": 1,
+    "userId": 1,
+    "assetId": 1
 }
 ```
 The keys must be the same but the values can be modified (but not null).
@@ -83,6 +79,12 @@ The keys must be the same but the values can be modified (but not null).
 Return an object of the new created map if the creation has been successful,
 else return an Internal Server Error(500).
 
+### Get all maps
+```
+GET /map/all
+```
+
+Return an array who contains each map of the database.
 ### Get an user by his id
 ```
 GET /user/{userId}
@@ -91,3 +93,43 @@ GET /user/{userId}
 If the id is correct, return an User object with username, email, his created maps, his scores and his ratings.
 
 Return an Internal Server Error(500) if the id is not existing.
+
+### Create an asset
+```
+POST /asset
+```
+Json required :
+```json
+{
+    "name": "Asset name",
+    "filepath": "Asset/path"
+}
+```
+
+### Insert a score
+
+```
+POST /score
+```
+
+Json required :
+```json
+{
+    "score": 200,
+    "mapId": 1,
+    "userId": 1
+}
+```
+
+### Insert a rating
+```
+POST /rating
+```
+Json required :
+```json
+{
+    "like": true,
+    "mapId": 1,
+    "userId": 1
+}
+```

@@ -19,7 +19,7 @@ User.init({
         allowNull: false,
     },
     password: {
-        type: Sequelize_1.DataTypes.STRING(50),
+        type: Sequelize_1.DataTypes.STRING(256),
         allowNull: false,
     }
 }, {

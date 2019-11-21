@@ -14,7 +14,12 @@ function sendPost(result) {
             location.href = "session.php?id=" + response.id + "&username=" + response.username + ""
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
-            console.log("Status: " + textStatus);
+            $("input#password").val('');
+            $('#info').append(`
+                <div class="alert alert-danger" role="alert">
+                    The username or password are wrong
+                </div>
+            `);
         }
     });
 }

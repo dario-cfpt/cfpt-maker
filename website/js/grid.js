@@ -7,9 +7,13 @@ function serialize() {
     myObject.mapContent = JSON.stringify(mapData);
     myObject.userId = $("input#userId").val();
     myObject.name = $("input#name").val();
-    myObject.spawnPosX = "245";
-    myObject.spawnPosY = "25";
+    myObject.spawnPosX = charPosX;
+    myObject.spawnPosY = charPosY;
     return myObject
+}
+
+function getPlayerPosition() {
+    mapData
 }
 
 function checkMapContent() {
@@ -30,7 +34,6 @@ function count(arr) {
     if (counts[166] == 1 && counts[143] == 1 && counts[131] == 1 && counts["char"] == 1) {
         return true
     }
-    
 }
 
 function sendMap(result) {
@@ -38,24 +41,33 @@ function sendMap(result) {
         type: "POST",
         url: 'http://127.0.0.1:3000/map',
         data: result,
+
         success: function (response) {
-            console.log(response);
+            info("the map has been successfully saved, you will be redirected to play on this map", "success");
+            var delay = 3000;
+            setTimeout(function () {
+                window.location = "play/index.html?id=" + response.id;
+            }, delay);
         },
         error: function (textStatus) {
-            console.log("Status: " + textStatus);
+            info("something went wrong, have you filled in all the fields ?", "danger");
         }
     });
 }
 
-
+function info(msg, type) {
+    $('#info').append(`
+        <div id="message" class="alert alert-` + type + `" role="alert">
+            ` + msg + `
+        </div>
+    `);
+}
 
 
 btnSub.addEventListener("click", function () {
-  if (checkMapContent()) {
-            sendMap(serialize());
-        }
-        else
-        {
-            console.log("error");
-        }
+    if (checkMapContent()) {
+        sendMap(serialize());
+    } else {
+        info("you need 1 door, 1 switch and 1 player ! ", "danger");
+    }
 });
