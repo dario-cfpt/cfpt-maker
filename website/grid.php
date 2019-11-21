@@ -39,12 +39,12 @@ $_SESSION['userId'] = 1;
                 transparent 75%,
                 transparent)
         }
-
+        
     </style>
-    <body style="height: 100%">
+    <body style="height: 100% ;" >
         <?php include 'nav.php'; ?>
 
-        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: 60%;max-width: 100%">
+        <div id="map" class="mx-auto d-block" style="width: 100%;overflow: auto;white-space: nowrap;height: calc(60% - 56px);max-width: 100%;">
         </div> 
         <div class="card d-block mx-auto" id="inventory" style="width: max-content; height: 40%;">
             <div class="card-header">
@@ -276,29 +276,7 @@ $_SESSION['userId'] = 1;
 
             drawGrid(mapData);
 
-            function saveMap()
-            {
-                console.log(mapData);
-                console.log();
-                console.log(mapData);
-                $.ajax({
-                    type: "POST",
-                    url: "mytest.json",
-                    success: function (data) {
-                        Gameplay = Game.fromJSON(JSON.stringify(data));
-                        Gameplay.initPrint();
-                        LocalPlayer = Gameplay.getPlayers().find(x => x.getName() == p["name_Player"]);
-                        Gameplay.setLocalPlayer(LocalPlayer);
-                        Gameplay.updateView(LocalPlayer);
-                        console.log(data);
-                        txt.innerHTML = Gameplay.getLastMessage();
-                        txtLocal.innerHTML = "Bienvenue " + LocalPlayer.getName();
-                    },
-                    error: function (request) {
-                        alert("Error " + request["status"] + ": " + request["statusText"]);
-                    }
-                });
-            }
+          
 
             map.scrollTop = 1000;
         </script>

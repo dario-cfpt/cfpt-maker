@@ -1,5 +1,5 @@
 <?php session_start();?>
-<nav class="navbar navbar-light navbar-expand-md navigation-clean-search">
+<nav class="navbar navbar-light bg-light fixed-top navbar-expand-md navigation-clean-search">
     <div class="container">
         <a class="navbar-brand" href="">Mario maker</a>
         <button class="navbar-toggler" data-target="#navcol-1" data-toggle="collapse">
