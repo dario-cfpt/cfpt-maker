@@ -11,7 +11,6 @@ function sendPost(user) {
         url: 'http://127.0.0.1:3000/user',
         data: user,
         success: function(response) {
-            console.log(response);
             location.href = "session.php?id=" + response.id + "&username=" + response.username + ""
         },
         error: function(e) {
