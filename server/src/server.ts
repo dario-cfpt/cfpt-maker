@@ -51,7 +51,7 @@ app.post('/login', (req, res) => {
                     },
                     {
                         username: {
-                            [Op.like]: username
+                            [Op.like]: username,
                         }
                     }
                 ],
@@ -63,7 +63,7 @@ app.post('/login', (req, res) => {
                 res.status(status.INTERNAL_SERVER_ERROR).send("Email/Username and/or password incorrect");
             }
         }).catch(err => {
-            res.status(status.INTERNAL_SERVER_ERROR).send(err);
+            sendError(res, err, "Une erreure est survenue lors de la tentative de connexions.");
         });
     } else {
         res.status(status.INTERNAL_SERVER_ERROR).send("The field 'email'/'username' and/or the field 'password' is missing");

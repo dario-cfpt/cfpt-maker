@@ -40,11 +40,13 @@ app.post('/login', (req, res) => {
                     {
                         email: {
                             [sequelize_1.Op.like]: email,
+                            collate: "utf8_general_ci"
                         }
                     },
                     {
                         username: {
-                            [sequelize_1.Op.like]: username
+                            [sequelize_1.Op.like]: username,
+                            collate: "utf8_general_ci"
                         }
                     }
                 ],
@@ -57,7 +59,7 @@ app.post('/login', (req, res) => {
                 res.status(status.INTERNAL_SERVER_ERROR).send("Email/Username and/or password incorrect");
             }
         }).catch(err => {
-            res.status(status.INTERNAL_SERVER_ERROR).send(err);
+            sendError(res, err, "Une erreure est survenue lors de la tentative de connexions.");
         });
     }
     else {
