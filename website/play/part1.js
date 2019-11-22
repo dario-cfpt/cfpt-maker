@@ -1,3 +1,9 @@
+/**
+ * Author : CHEVROLET Anthony
+ * Date : 21.11.19
+ * Version : 1.0
+ * Desc : File with logical of Game
+ */
 var id;
 function callMap()
 {
