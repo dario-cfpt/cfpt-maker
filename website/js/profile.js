@@ -7,7 +7,6 @@ function getMaps() {
         success: function(response) {
             console.log(response);
             showMaps(response);
-            fillProfile(response);
         },
         error: function(response) {
             console.log(response);
@@ -35,14 +34,14 @@ function showMaps(maps) {
 
     maps.MapScore.forEach(element => {
         $('#score').append(`
-            <div class="row">
-                <div class="col">
-                    <a href="play/index.html?id=` + element.Score.mapId + `">mapName: ` + element.name + `</a>
-                </div>
-                <div class="col">
-                    <p>Score: ` + element.Score.score + `</p>
-                </div>
-            </div>
+            <tr>
+                <td>
+                    <a href="play/index.html?id=` + element.Score.mapId + `">` + element.name + `</a>
+                </td>
+                <td>
+                    ` + element.Score.score + `
+                </td>
+            </tr>
         `);
     });
     maps.MapRating.forEach(element => {
@@ -60,10 +59,6 @@ function showMaps(maps) {
             </div>
         `);
     });
-}
-
-function fillProfile(user) {
-    $('#userName').append("Username: " + user.username);
 }
 
 $(function() {

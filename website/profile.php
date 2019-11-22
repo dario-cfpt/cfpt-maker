@@ -22,7 +22,14 @@
     <div class="row" style="padding: 44px">
         <div class="col-lg-8">
             <div class="row" id="madeBy"></div>
-            <div class="row" id="score"></div>
+            <div class="row">
+                <table id="score">
+                    <tr>
+                    <th>Map name</th>
+                    <th>Score</th>
+                    </tr>
+                </table>
+            </div>
             <div class="row" id="played"></div>
         </div>
         <div class="col">
