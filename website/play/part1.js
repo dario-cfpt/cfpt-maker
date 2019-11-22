@@ -9,7 +9,7 @@ function callMap()
 {
     var url_string = window.location.href;
     var url = new URL(url_string);
-     id = url.searchParams.get("id");
+    id = url.searchParams.get("id");
     $.ajax({
         type: "GET",
         url: "http://localhost:3000/map/" + id,
@@ -121,7 +121,7 @@ function preload()
         this.load.image('pic', 'end.png');
     } else
     {
-        this.load.tilemapTiledJSON('map', 'showmap.php?id='+id); //The map
+        this.load.tilemapTiledJSON('map', 'showmap.php?id=' + id); //The map
         this.load.image('kenney_redux_64x64', '../../config/kenney_redux_64x64.png'); //The Asset
         this.load.spritesheet('player', '../../config/dude-cropped.png', {frameWidth: 32, frameHeight: 42}); //Player 
     }
@@ -390,12 +390,11 @@ function update(time, delta)
 
 
     var currentL = layer.getTileAt(layerCoordX, layerCoordY);
+    //find door
     if (currentL != null && currentL.index == 119)
     {
-        matterSprite.destroy();
-        playerController.matterSprite = null;
-        restart.call(this);
-        return;
+        var score = timer * life;
+        location.replace("../win.php?id=" + id + "&score=" + score);
     }
     //find a lever 
     if (currentL != null && currentL.index == 166)
